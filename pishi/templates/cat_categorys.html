@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+ <!-- Header-->
+<header class="bg-dark py-5">
+     <div class="container px-4 px-lg-5 my-5">
+          <div class="text-center text-white">
+              <h1 class="display-4 fw-bolder"> دسته بندی گربه های خانگی </h1>
+              <p class="lead fw-normal text-white-50 mb-0"> بر اساس نژاد </p>
+           </div>
+     </div>
+</header>
+<br><br>
+<div class="container mt-5">
+    <div class="row g-3">
+                {% for category in categorys %}
+                  <div class="col-md-6">
+                    <div class="card h-100 shadow-sm border-0 rounded-lg" style="transition: transform 0.3s ease;">
+                        <a href="{% url 'cat_category' category.name %}">
+                            <img class="card-img-top" src="{{ category.picture.url }}" alt="{{ category.name }}"  />
+                        </a>
+                     
+                     <div class="card-body text-center">
+                        <a class="text-decoration-none link-dark stretched-link" href="{% url 'cat_category' category.name %}"><h5 class="card-title">{{ category.name }}</h5></a>
+                     </div>
+                          
+                    </div>
+                  </div> 
+                {% endfor %}
+    </div>
+</div>
+<br><br>
+{% endblock %}
+

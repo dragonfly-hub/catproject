@@ -13,8 +13,17 @@
                  <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"> خارج شدن </a></li>
                 {% else %}
                  <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">  وارد شدن </a></li>
+                 <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">  ثبت نام  </a></li>
                 {% endif %}
                 
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="{% url 'home' %}" role="button" data-bs-toggle="dropdown" aria-expanded="false"> پیشینیان </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{% url 'home' %}"> صفحه اصلی  </a></li>
+                        <li><a class="dropdown-item" href="{% url 'cat_categorys' %}"> دسته بندی ها </a></li>
+                    </ul>
+                </li>
+
                 <li class="nav-item"><a class="nav-link" href="#!"> کتلاگ</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">کتشاپ </a>
