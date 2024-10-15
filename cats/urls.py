@@ -22,5 +22,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('pishi.urls') ) #اگر کاربر ب ادرس خالی وبسایت ریکويست زد بیا از یوارال های اپ پیشی استفاده کن
+    path('', include('pishi.urls') ), #اگر کاربر ب ادرس خالی وبسایت ریکويست زد بیا از یوارال های اپ پیشی استفاده کن
+    path('catlog/', include('catlog.urls') )
 ]+static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

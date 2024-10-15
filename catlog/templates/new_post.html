@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+ <!-- Header-->
+<header class="bg-dark py-5">
+     <div class="container px-4 px-lg-5 my-5">
+          <div class="text-center text-white">
+              <h1 class="display-4 fw-bolder"> ایجاد پست جدید </h1>
+              <p class="lead fw-normal text-white-50 mb-0">  وقتشه پست بزاریم!   </p>
+           </div>
+     </div>
+</header>
+<br><br>
+<section id="blog" class="blog">
+    <div class="container" data-aos="fade-up">
+        <div class="row">
+            <div class="col-lg-12 netries">
+                <form  method="POST" enctype="multipart/form-data">
+                      {% csrf_token %}
+                       {{ form | crispy }}
+                       <br><br>
+                       <button type="submit" class="btn btn-secondary">  ایجاد پست  </button>
+                       <br><br>
+                       <br><br>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<br><br>
+{% endblock %}
