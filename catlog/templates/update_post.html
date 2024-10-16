@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+    <body>
+        <!-- Page content-->
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-lg-8">
+                    <form  method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form | crispy }}
+                        <br><br>
+                        <button type="submit" class="btn btn-secondary"> ذخیره تغییرات </button>
+                        <br><br><br><br>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+{% endblock %}
