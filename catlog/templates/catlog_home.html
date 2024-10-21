@@ -9,7 +9,7 @@
           </div>
           <br><br>          
          {% if user.is_authenticated %}
-           <a href="{% url 'new_post' %}" class="btn btn-outline-light btn-lg px-3"  role="button" > افزودن پست جدید </a>
+           <center><a href="{% url 'new_post' %}" class="btn btn-outline-warning btn-lg px-3"  role="button" > افزودن پست جدید </a></center>
          {% else %}
            <center><a href="{% url 'login' %}" class="btn btn-outline-light btn-lg px-4"  role="button" >لاگین کن تا پست بزاری!</a></center>
          {% endif %}
@@ -24,8 +24,8 @@
         <div class="col-lg-8">
             <!-- Featured blog post-->
              {% for post in post_list %}
-            <div class="card mb-4">
-                <a href="{% url 'post_detail' post.pk %}"><img class="card-img-top" src="{{ post.picture.url }}" alt="..." /></a>
+            <div class="card mb-4" style="width: 19cm; height: auto;">
+                <a href="{% url 'post_detail' post.pk %}"><img class="card-img-top" src="{{ post.picture.url }}" alt="..."   /></a>
                 <div class="card-body">
                     <div class="small text-muted">{{ post.writer }},  {{ post.date }}</div>
                     <a class="text-decoration-none link-dark stretched-link" href="{% url 'post_detail' post.pk %}"><h2 class="card-title">{{ post.title }}</h2></a>
@@ -37,53 +37,70 @@
             {% endfor %}
 
             <!-- Pagination-->
+            {% if post_list.has_other_pages %}
             <nav aria-label="Pagination">
                 <hr class="my-0" />
-                <ul class="pagination justify-content-center my-4">
-                    <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a></li>
-                    <li class="page-item active" aria-current="page"><a class="page-link" href="#!">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#!">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#!">3</a></li>
-                    <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
-                    <li class="page-item"><a class="page-link" href="#!">15</a></li>
-                    <li class="page-item"><a class="page-link" href="#!">Older</a></li>
-                </ul>
+                <div class="blog-pagination text-center">
+                    <ul class="pagination justify-content-center my-4 align-items-center">
+                        <!-- دکمه صفحه قبلی -->
+                        {% if post_list.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ post_list.previous_page_number }}" aria-label="Previous">
+                                &laquo; <!-- آیکن دکمه قبلی -->
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">&laquo;</span>
+                        </li>
+                        {% endif %}
+        
+                        <!-- نمایش شماره صفحه -->
+                        <li class="page-item disabled mx-3">
+                            <span class="badge bg-secondary px-3 py-2">
+                                <strong>صفحه {{ post_list.number }} از {{ post_list.paginator.num_pages }}</strong>
+                            </span>
+                        </li>
+        
+                        <!-- دکمه صفحه بعدی -->
+                        {% if post_list.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ post_list.next_page_number }}" aria-label="Next">
+                                &raquo; <!-- آیکن دکمه بعدی -->
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">&raquo;</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
             </nav>
+        {% endif %}
+        <br>
         </div>
         <!-- Side widgets-->
         <div class="col-lg-4">
             <!-- Search widget-->
             <div class="card mb-4">
-                <div class="card-header">Search</div>
+                <div class="card-header">جستجو</div>
                 <div class="card-body">
                     <div class="input-group">
-                        <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
-                        <button class="btn btn-primary" id="button-search" type="button">Go!</button>
+                       <form action="{% url 'search_catlog' %}" method="POST">
+                        {% csrf_token %}
+                        <input class="form-control" type="text" placeholder="جستجو در کتلاگ" aria-label="Enter search term..." aria-describedby="button-search" name="searched-catlog" />
+                        <br><button type="submit" class="btn btn-primary"> برو بگرد! </button>
+                       </form>
                     </div>
                 </div>
             </div>
-            <!-- Categories widget-->
-            <div class="card mb-4">
-                <div class="card-header">Categories</div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <ul class="list-unstyled mb-0">
-                                <li><a href="#!">Web Design</a></li>
-                                <li><a href="#!">HTML</a></li>
-                                <li><a href="#!">Freebies</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-sm-6">
-                            <ul class="list-unstyled mb-0">
-                                <li><a href="#!">JavaScript</a></li>
-                                <li><a href="#!">CSS</a></li>
-                                <li><a href="#!">Tutorials</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
+             {% block sidebar %}
+                {% include 'catlog_sidebar.html' %}
+             {% endblock sidebar %}
+
+
             <!-- Side widget-->
             <div class="card mb-4">
                 <div class="card-header">Side Widget</div>
@@ -92,4 +109,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock content %}

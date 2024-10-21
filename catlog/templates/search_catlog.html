@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <body>
+        <!-- Page content-->
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Post content-->
+                    <article>
+                        <!-- Post header-->
+                        <header class="mb-4">
+                            <!-- Post title-->
+                             {% if searched_catlog %}
+                            <h1 class="fw-bolder mb-1"> نتایج جستجو در کتلاگ</h1></header>
+                            <br><br>
+                               {% for post in searched_catlog %}
+                               <div class="card mb-4" style="width: 19cm; height: auto;">
+                                <a href="{% url 'post_detail' post.pk %}"><img class="card-img-top" src="{{ post.picture.url }}" alt="..."   /></a>
+                                  <div class="card-body">
+                                    <div class="small text-muted">{{ post.writer }},  {{ post.date }}</div>
+                                    <a class="text-decoration-none link-dark stretched-link" href="{% url 'post_detail' post.pk %}"><h2 class="card-title">{{ post.title }}</h2></a>
+                                    <br>
+                                    <p class="card-text">{{ post.excerpt }}</p>
+                                    <a class="btn btn-primary" href="{% url 'post_detail' post.pk %}"> →مشاهده پست </a>
+                                  </div>
+                               </div>
+                               {% endfor %}
+                            {% endif %}
+                        <br>
+                        
+                    </article> 
+                </div>
+            </div>
+        </div>    
+    </body> 
+
+
+
+{% endblock %}
