@@ -1,11 +1,20 @@
+from typing import Any
+from django.http import HttpRequest
+from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render, redirect
 from .models import Cat, Category
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from .forms import SignUpForm
+from django.views import generic
+from random import randint
+
+
+
+
 
 def helloworld(request):
     all_cats = Cat.objects.all()
@@ -33,6 +42,44 @@ def login_user(request):
            return redirect("login")
     else:    
         return render(request, 'login.html')
+
+
+
+def input_email_for_login(request):
+     return render(request, 'input_email_for_login.html', {})
+
+
+
+
+class Login_User_Email(generic.TemplateView):
+    otp = ''
+    email = ''
+    
+    def get(self, request, *args, **kwargs):
+        Login_User_Email.email = request.GET.get('email')
+        
+        Login_User_Email.otp = str(randint(100000,999999))
+        messages.success(request, Login_User_Email.otp)
+        return render(request, 'login_with_email.html')
+    
+    def post(self, request, *args, **kwargs):
+        sent_otp = request.POST.get('sent-otp')
+        if sent_otp == Login_User_Email.otp:
+            user =get_user_model().objects.filter(email=Login_User_Email.email).first()
+            #گت یوزر مدل چیکار میکنه؟اگر کاستوم یوزر تعریف کرده باشیم میاد اون کاستوم یوزر هارو میاره اگه تعریف نکرده باشیم مال جنگو رو میاره.متد فیلتر از متد گت مناسب تره اگه گت چیزی پیدا نکنه ارور میده ولی فیلتر نه میگه صفر تا پیدا کرده. فرست میاد از بین اونایی که فیلتر پیدا کرده اون اولیو بما میده که چون یونیک هستن فقط یکی پیدا میکنه اگه وجود داشته باشه
+            if user: 
+                login(request, user)
+                messages.success(request, ("با موفقیت وارد شدید"))
+                return redirect("home")
+            else:
+                messages.success(request, (" چنین اکانتی وجود ندارد. ابتدا حساب کاربری ایجاد کنید"))
+                return redirect("login")
+        else:
+            messages.success(request, (" کد وارد شده اشتباه است "))
+            return redirect("login_email")
+
+
+
 
 
 def logout_user(request):

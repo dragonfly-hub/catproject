@@ -1,14 +1,15 @@
 from django.shortcuts import render,redirect
-from django.views.generic import View, CreateView, DetailView
+from django.views.generic import View, CreateView, DetailView ,FormView
 from django.views.generic.edit import UpdateView, DeleteView
 from .models import Post
-from .forms import PostForm
-from django.urls import reverse_lazy
+from .forms import PostForm, CommentForm
+from django.urls import reverse_lazy,reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.db.models import Q
 #با کیو میتونیم عبارت های منطقی مثل اند و اور و نات درست کنیم و کوئری مهمیه
 from django.core.paginator import Paginator
+from django.views.generic.detail import SingleObjectMixin # بوسیله این میتونیم محتوایی که اتک شده به یک یوار ال رو بگیریم
 
 
 class CatlogHome(View):
@@ -29,10 +30,52 @@ class CatlogHome(View):
         return render(request, self.template_name, context )
 
 
-class PostDetail(DetailView):
+class CommentGet(DetailView):
     model = Post
     template_name = 'single_post.html'
+
+
+    def get_context_data(self, **kwargs):# متد موجود توی دیتیل ویو . میره دیکشنری کانتکس که اطلاعات موجود برای نمایش توی صفحه داره برای ما استخراج میکنه و میاره تا ما در کنار این اطلاعات فرم کامنت رو نشون بدیم. چون همه چیو داره ولی فرم رو نداره میخواهیم بهش فرم رو بدیم
+        context = super().get_context_data(**kwargs)# از سوپر یا دیتیل ویو این متد رو استخراج میکنه و این متد دیکشنری کانتکس رو برای ما مقدار میده
+        context['form'] = CommentForm()# بهش میگیم توی کانتکس یه مقدار یا فیلد جدید بهش اضافه کن یعنی به همه ی محتوای پست حالا فرم رو هم اضافه کن و از کامنت فرم اون فرم رو بگیر
+        return context
+        #این کلاس مسئول پاسخ دهی به گت ریکوئست هست
+
+class CommentPost(SingleObjectMixin, FormView):#ارث بری چندگانه
+    model = Post
+    form_class = CommentForm
+    template_name = "single_post.html"
+
+    def post(self, request, *args, **kwargs):# پاسخدهی به پست ریکوستا
+        self.object = self.get_object() # از سینگل ابجکت میکسین میاد. میره و پست فعلی رو برامون استخراج میکنه و میارهبه عنوان یه ابجکت میزاره اینجا. پس با استفاده از یو ار الی که داشتیم کل محتوا رو ذخیره کردیم توی ابجکت
+        return super().post(request, *args, **kwargs) # متد پست کاری که اینجا انجام میره فرمی که از طرف کاربر ارسال شده چک میکنه اگر فرم ولید و درست باشه میاد و تابع فرم ولید رو برای ما اجرا میکنه
+    
+    def form_valid(self, form):
+        comment = form.save(commit=False)#کامیت مساوی با فالس یعنی توی دیتا بیس ذخیره نشه فعلا
+        comment.parent_post = self.object# این کامنت یک پست داره و از طریق ابجکت بالایی پیداش میکنیم
+        comment.author = self.request.user # نویسنده کامنت رو برمیداریم
+        comment.save() # حالا داخل دیتا بیس سیو میشه
+        return super().form_valid(form) #متد فرم ولید رو از کلاس سوپر ریترن کن و بهش فرم رو هم بده. فرم ولید کاری که انجام میده اینه که میگه که فرم سیو شد و توی دیتا بیس قرار گرف حالا ساکسس یو ارال رو فراخوانی کن
+
+    def get_success_url(self):
+        post = self.get_object()#مقاله فعلی ما
+        return reverse("post_detail", kwargs={'pk': post.pk})
+
+
+
+
+#در کلاس پست دیتیل ما دو نوع ریکوئست دریافت میکنیم
+class PostDetail(View):
+    def get(self, request, *args,**kwargs ):#اور راید متد گت ویو . اگر ارگومان  های دیگه اومد.
+        view = CommentGet.as_view()
+        return view(request, *args,**kwargs)
+        # به این ترتیب اگر گت ریکوئست براش بیاد میتونه پاسخ دهی بکنه
         
+    def post(self, request, *args, **kwargs):
+        view = CommentPost.as_view()
+        return view(request, *args, **kwargs)
+
+
 
 
 class NewPost(LoginRequiredMixin, CreateView):

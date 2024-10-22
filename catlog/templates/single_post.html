@@ -1,128 +1,102 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
 
-    <body>
-        <!-- Page content-->
-        <div class="container mt-5">
-            <div class="row">
-                <div class="col-lg-8">
+<body>
+    <!-- Page content-->
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Main post content-->
+            <div class="col-lg-8">
+                <!-- Post content-->
+                <article>
+                    <!-- Post header-->
+                    <header class="mb-4">
+                        <!-- Post title-->
+                        <h1 class="fw-bolder mb-1">{{ post.title }}</h1>
+                        <br>
+                        <!-- Post meta content-->
+                        <div class="text-muted fst-italic mb-2">{{ post.writer }},  {{ post.date }}</div>
+                    </header>
+                    <!-- Preview image figure-->
+                    <figure class="mb-4"><img class="img-fluid rounded" src="{{ post.picture.url }}" alt="..." /></figure>
+                    <!-- Post categories-->
+                    <div class="badge bg-secondary text-decoration-none link-light" > نوشته شده توسط: آدم خانگیِ {{ post.cat_name }} </div>
+                    <br><br><br>
                     <!-- Post content-->
-                    <article>
-                        <!-- Post header-->
-                        <header class="mb-4">
-                            <!-- Post title-->
-                            <h1 class="fw-bolder mb-1">{{ post.title }}</h1>
+                    <section class="mb-5">
+                        <p class="fs-5 mb-4">{{ post.body }}</p>
+                    </section>
+                    {% if post.writer == request.user %}
+                    <a class="badge bg-primary text-decoration-none link-light " href="{% url 'update_post' post.pk %}">ویرایش </a>
+                    <a class="badge bg-danger text-decoration-none link-light " href="{% url 'delete_post' post.pk %}">حذف</a>
+                    {% endif %}
+                    <br><br><br>
+                </article>
+
+                <!-- Comment Section -->
+                <div class="blog-comments">
+                    {% if user.is_authenticated %}
+                    <div class="card">
+                        <h5 class="card-header">کامنتی بگذار ای {{user.username }} </h5>
+                        <div class="card-body">
+                            <form method="POST">
+                                {% csrf_token %}
+                                {{ form | crispy }}
+                                <br>
+                                <button type="submit" class="btn btn-secondary">ارسال کامنت</button>
+                            </form>
                             <br>
-                            <!-- Post meta content-->
-                            <div class="text-muted fst-italic mb-2">{{ post.writer }},  {{ post.date }}</div>
-                        </header>
-                        <!-- Preview image figure-->
-                        <figure class="mb-4"><img class="img-fluid rounded" src="{{ post.picture.url }}" alt="..." /></figure>
-                        <!-- Post categories-->
-                        <div class="badge bg-secondary text-decoration-none link-light" > نوشته شده توسط: آدم خانگیِ {{ post.cat_name }} </div>
-                        <br><br><br>
-                        <!-- Post content-->
-                        <section class="mb-5">
-                            <p class="fs-5 mb-4">{{ post.body }}</p>
-                        </section>
-                        {% if post.writer == request.user %}
-                        <a class="badge bg-primary text-decoration-none link-light " href="{% url 'update_post' post.pk %}">ویرایش </a>
-                        <a class="badge bg-danger text-decoration-none link-light " href="{% url 'delete_post' post.pk %}">حذف</a>
-                        {% endif %}
-                        <br><br><br>
-                    </article>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <br>
+
+                    {% if post.comment_set.count > 1 %}
+                    <h6 class="comments-count">{{ post.comment_set.count }} Comments</h6>
+                    {% else %}
+                    <h6 class="comments-count">{{ post.comment_set.count }} Comment</h6>
+                    {% endif %}
+
                     <!-- Comments section-->
                     <section class="mb-5">
                         <div class="card bg-light">
                             <div class="card-body">
-                                <!-- Comment form-->
-                                <form class="mb-4"><textarea class="form-control" rows="3" placeholder="Join the discussion and leave a comment!"></textarea></form>
-                                <!-- Comment with nested comments-->
-                                <div class="d-flex mb-4">
-                                    <!-- Parent comment-->
-                                    <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                                    <div class="ms-3">
-                                        <div class="fw-bold">Commenter Name</div>
-                                        If you're going to lead a space frontier, it has to be government; it'll never be private enterprise. Because the space frontier is dangerous, and it's expensive, and it has unquantified risks.
-                                        <!-- Child comment 1-->
-                                        <div class="d-flex mt-4">
-                                            <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                                            <div class="ms-3">
-                                                <div class="fw-bold">Commenter Name</div>
-                                                And under those conditions, you cannot establish a capital-market evaluation of that enterprise. You can't get investors.
-                                            </div>
-                                        </div>
-                                        <!-- Child comment 2-->
-                                        <div class="d-flex mt-4">
-                                            <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                                            <div class="ms-3">
-                                                <div class="fw-bold">Commenter Name</div>
-                                                When you put money directly to a problem, it makes a good headline.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                                 <!-- Single comment-->
+                                {% for comment in post.comment_set.all %}
                                 <div class="d-flex">
-                                    <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                                    <div class="flex-shrink-0">
+                                        <img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
+                                    </div>
                                     <div class="ms-3">
-                                        <div class="fw-bold">Commenter Name</div>
-                                        When I look at the universe and all the ways the universe wants to kill us, I find it hard to reconcile that with statements of beneficence.
+                                        <div class="fw-bold">{{ comment.author }}</div>
+                                        <small><time datetime="2020-01-01" class="text-muted fst-italic mb-2">{{ comment.date }}</time></small>
+                                        <br>
+                                        <p>{{ comment.body }}</p>
                                     </div>
                                 </div>
+                                <br>
+                                {% endfor %}
                             </div>
                         </div>
                     </section>
+                </div> <!-- End of blog-comments -->
+            </div> <!-- End of main post content (col-lg-8) -->
+
+            <!-- Side widgets-->
+            <div class="col-lg-4">
+                {% block sidebar %}
+                {% include 'catlog_sidebar.html' %}
+                {% endblock sidebar %}
+
+                <!-- Side widget-->
+                <div class="card mb-4">
+                    <div class="card-header">Side Widget</div>
+                    <div class="card-body">You can put anything you want inside of these side widgets. They are easy to use, and feature the Bootstrap 5 card component!</div>
                 </div>
-                <!-- Side widgets-->
-                <div class="col-lg-4">
-                    <!-- Search widget-->
-                    <div class="card mb-4">
-                        <div class="card-header">Search</div>
-                        <div class="card-body">
-                            <div class="input-group">
-                                <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
-                                <button class="btn btn-primary" id="button-search" type="button">Go!</button>
-                            </div>
-                        </div>
-                    </div>
-
-                     
-                  {% block sidebar %}
-                   {% include 'catlog_sidebar.html' %}
-                  {% endblock sidebar %}
-
-                    <!-- Categories widget-->
-                    <div class="card mb-4">
-                        <div class="card-header">Categories</div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <ul class="list-unstyled mb-0">
-                                        <li><a href="#!">Web Design</a></li>
-                                        <li><a href="#!">HTML</a></li>
-                                        <li><a href="#!">Freebies</a></li>
-                                    </ul>
-                                </div>
-                                <div class="col-sm-6">
-                                    <ul class="list-unstyled mb-0">
-                                        <li><a href="#!">JavaScript</a></li>
-                                        <li><a href="#!">CSS</a></li>
-                                        <li><a href="#!">Tutorials</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Side widget-->
-                    <div class="card mb-4">
-                        <div class="card-header">Side Widget</div>
-                        <div class="card-body">You can put anything you want inside of these side widgets. They are easy to use, and feature the Bootstrap 5 card component!</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
+            </div> <!-- End of sidebar (col-lg-4) -->
+        </div> <!-- End of row -->
+    </div> <!-- End of container -->
+</body>
 
 {% endblock %}

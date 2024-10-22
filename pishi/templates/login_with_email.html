@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+ <!-- Header-->
+<header class="bg-dark py-5">
+     <div class="container px-4 px-lg-5 my-5">
+          <div class="text-center text-white">
+              <h1 class="display-4 fw-bolder"> ورود با ایمیل</h1>
+              <p class="lead fw-normal text-white-50 mb-0"> رمز یکبار مصرف به ایمیل شما ارسال شد </p>
+           </div>
+     </div>
+</header>
+<br><br>
+<div class="container">
+    <div class="row">
+        <center>
+            <div class="col-10">
+                <form method="POST"  action="{% url 'login_email' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                      <input type="text" class="form-control" name="sent-otp" placeholder="  رمز ارسال شده را وارد کنید ">
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-secondary"> ورود </button>
+                  </form>
+            </div>
+        </center>
+    </div>
+</div>
+<br><br>
+{% endblock %}
