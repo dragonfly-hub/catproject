@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load humanize %}
 {% block content %}
 
 <body>
@@ -70,7 +71,7 @@
                                     </div>
                                     <div class="ms-3">
                                         <div class="fw-bold">{{ comment.author }}</div>
-                                        <small><time datetime="2020-01-01" class="text-muted fst-italic mb-2">{{ comment.date }}</time></small>
+                                        <small><time dir="ltr" datetime="2020-01-01" class="text-muted fst-italic mb-2">{{ comment.date | naturaltime }}</time></small>
                                         <br>
                                         <p>{{ comment.body }}</p>
                                     </div>

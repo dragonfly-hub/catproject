@@ -19,6 +19,7 @@ from random import randint
 def helloworld(request):
     all_cats = Cat.objects.all()
     return render(request, 'index.html', {'cats':all_cats})
+    
 
 
 def about(request):
@@ -75,8 +76,9 @@ class Login_User_Email(generic.TemplateView):
                 messages.success(request, (" چنین اکانتی وجود ندارد. ابتدا حساب کاربری ایجاد کنید"))
                 return redirect("login")
         else:
-            messages.success(request, (" کد وارد شده اشتباه است "))
-            return redirect("login_email")
+            messages.success(request, (" کد وارد شده اشتباه است. مجدد امتحان کنید"))
+            return redirect("input_email_for_login")
+        
 
 
 
