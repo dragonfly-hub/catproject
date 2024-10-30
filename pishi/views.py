@@ -11,7 +11,7 @@ from django import forms
 from .forms import SignUpForm
 from django.views import generic
 from random import randint
-
+from catshop.models import Product
 
 
 
@@ -112,7 +112,8 @@ def signup_user(request):
 
 def cat(request,pk):
     cat = Cat.objects.get(id=pk)
-    return render(request, 'cat.html', {'cat':cat})
+    related_products = Product.objects.filter(category__in=cat.product_category.all()).distinct()  
+    return render(request, 'cat.html', {'cat':cat ,'related_products': related_products})
 
 
 def cat_category(request,cat):

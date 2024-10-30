@@ -2,6 +2,8 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 import datetime
 
+
+
 class Category(models.Model):
     name = models.CharField(max_length=30)
     description = models.CharField(max_length=500, default='', blank=True, null=True)
@@ -50,3 +52,6 @@ class Order(models.Model):
 
     def __str__(self) :
         return self.product
+    
+
+
