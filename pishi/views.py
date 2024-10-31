@@ -2,7 +2,7 @@ from typing import Any
 from django.http import HttpRequest
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render, redirect
-from .models import Cat, Category
+from .models import Cat, Category, Related_Products_For_Cat
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -112,8 +112,12 @@ def signup_user(request):
 
 def cat(request,pk):
     cat = Cat.objects.get(id=pk)
-    related_products = Product.objects.filter(category__in=cat.product_category.all()).distinct()  
-    return render(request, 'cat.html', {'cat':cat ,'related_products': related_products})
+    # پیدا کردن دسته‌بندی‌های مرتبط از طریق Related_Products_For_Cat
+    related_categories = Related_Products_For_Cat.objects.filter(cat=cat).values_list('category', flat=True)#ازvalues_list('category', flat=True) استفاده کردیم تا تنها آی‌دی‌های دسته‌بندی‌ها را به صورت یک لیست ساده دریافت کنیم.
+    
+    related_products = Product.objects.filter(category_id__in=related_categories).distinct()
+
+    return render(request, 'cat.html', {'cat': cat, 'related_products': related_products})
 
 
 def cat_category(request,cat):
