@@ -55,11 +55,14 @@ def input_email_for_login(request):
 class Login_User_Email(generic.TemplateView):
     otp = ''
     email = ''
+    attempt_count = 0  # شمارش تلاش‌های ورود ناموفق
     
     def get(self, request, *args, **kwargs):
         Login_User_Email.email = request.GET.get('email')
         
         Login_User_Email.otp = str(randint(100000,999999))
+        Login_User_Email.attempt_count = 0  # ریست شمارش تلاش‌ها
+
         messages.success(request, Login_User_Email.otp)
         return render(request, 'login_with_email.html')
     
@@ -76,9 +79,16 @@ class Login_User_Email(generic.TemplateView):
                 messages.success(request, (" چنین اکانتی وجود ندارد. ابتدا حساب کاربری ایجاد کنید"))
                 return redirect("login")
         else:
-            messages.success(request, (" کد وارد شده اشتباه است. مجدد امتحان کنید"))
-            return redirect("input_email_for_login")
-        
+             # اگر کد وارد شده اشتباه باشد
+            Login_User_Email.attempt_count += 1
+            if Login_User_Email.attempt_count < 2:
+                # اجازه تلاش مجدد
+                messages.error(request, "کد وارد شده اشتباه است. لطفا مجددا امتحان کنید.")
+                return render(request, 'login_with_email.html')
+            else:
+                # اگر تعداد تلاش‌ها بیشتر از حد مجاز باشد
+                messages.error(request, "شما بیش از حد مجاز تلاش کرده‌اید. لطفا دوباره کد جدید دریافت کنید.")
+                return redirect("input_email_for_login")
 
 
 
