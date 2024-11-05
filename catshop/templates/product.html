@@ -30,11 +30,19 @@
                             <span> 💰 قیمت: </span>
                             <p class="lead">{{ product.price | intcomma }} تومان</p>
                             {% endif %}
+                            <br>
+                            <form method="POST" action="{% url 'cart:cart_add' product.id %}">
+                                {{ cart_add_product_form }}
+                                {% csrf_token %}
+                                <br>
+                                <input type="submit" value="افزودن به سبد خرید" class="btn btn-warning mt-auto">
+                            </form>
+                        
                         </div>
                     </div>
                 </div>
             </div>
-            <br>
+            <br><br><br>
             <div class="text-start">
                 <a class="btn btn-dark mt-auto" href="{% url 'catshop_home' %}"> رفتن به کتشاپ </a>
                 <a class="btn btn-outline-dark mt-auto" href="{% url 'home' %}">بازگشت به صفحه اصلی</a>
