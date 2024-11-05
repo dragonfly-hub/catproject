@@ -25,4 +25,5 @@ urlpatterns = [
     path('', include('pishi.urls') ), #اگر کاربر ب ادرس خالی وبسایت ریکويست زد بیا از یوارال های اپ پیشی استفاده کن
     path('catlog/', include('catlog.urls') ),
     path('catshop/', include('catshop.urls') ),
+    path('cart/', include('cart.urls') ),
 ]+static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

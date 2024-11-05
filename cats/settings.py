@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'pishi',
     'catlog',
     'catshop',
+    'cart',
 ]
 
 MIDDLEWARE = [
@@ -72,7 +73,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
 
-                'catlog.context_processors.recent_posts'
+                'catlog.context_processors.recent_posts',
+                'cart.context_processors.cart'
+                
             ],
         },
     },
@@ -131,6 +134,8 @@ STATICFILES_URLS = ['static/'] #برای شناساندن پوشه استاتی�
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') #ایجاد یک پوشه برای فرار گرفتن عکسها
 
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -141,3 +146,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+
+CART_SESSION_ID = 'cart'  #ایجاد یک متغیر برای  راحتی کار 

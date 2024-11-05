@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render
 from .models import Product,Category 
 from django.contrib import messages
+from cart.forms import CartAddProductForm
 
 
 def catshop_home(request):
@@ -10,7 +11,8 @@ def catshop_home(request):
 
 def product(request,pk):
     product = Product.objects.get(id=pk)
-    return render(request , 'product.html',{'product':product})
+    cart_add_product_form = CartAddProductForm()
+    return render(request , 'product.html',{'product':product, 'cart_add_product_form':cart_add_product_form})
 
 
 def category(request,cat):

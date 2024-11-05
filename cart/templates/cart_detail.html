@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder"> سبد خرید شما</h1>
+            <p class="lead fw-normal text-white-50 mb-0">اینجا هر چی که بخوای بخری اضافه میشه </p>
+        </div>
+    </div>
+</header>
+
+<br>
+{% if cart %}
+ {% for item in cart %}
+  {% with product=item.product %}
+  <div class="container">
+   <div class="card mb-3" >
+     <div class="row g-0">
+      <div class="col-md-4">
+        <a href="{{ product.get_absolute_url }}"><img src="{{ product.picture.url }}" class="img-fluid rounded-start" alt="..."></a>
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <br>
+          <form method="POST" action="{% url 'cart:cart_add' product.id %}">
+            تعداد: {{ item.update_product_count_form.product_count }}
+            {{ item.update_product_count_form.update }}
+            {% csrf_token %}
+            <br><br>
+            <button type="submit" class="btn btn-outline-primary btn-sm me-2">
+              <i class="bi bi-pencil-square"></i> ویرایش
+          </button>
+          </form>
+          <br>
+
+          <p class="card-text">
+            قیمت:
+            {% if product.is_sale %}
+                <span style="text-decoration: line-through;">{{ product.price|intcomma }} تومان</span>
+                <span class="text-danger ms-2"> {{ product.sale_price|intcomma }} تومان</span>
+            {% else %}
+                <span>{{ product.price|intcomma }} تومان</span>
+            {% endif %}
+          </p>
+
+          <p class="card-text">قیمت کل: {{ item.total_price|intcomma }} تومان</p>
+
+          
+           <a  href="{% url 'cart:cart_remove' product.id %}" class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-trash-fill"></i> حذف
+           </a>
+           
+        </div>
+      </div>
+     </div>
+   </div>
+  </div>
+   {% endwith %}
+  {% endfor %}
+  <div class="container"><a class="btn btn-outline-warning" href="{% url 'catshop_home' %}"><strong>+</strong> افزودن به سفارشات</a>
+  <br><br><br><br><br>
+  <h3>مجموع کل سفارشات : {{ cart.get_total_price|intcomma }} تومان</h3></div>
+  <br><br><br>
+  
+{% else %}
+<br><br>
+<center>
+<h3 class="container">
+    سبد خرید شما خالیست &#129402;
+</h3>
+<br><br><br>
+</center>
+{% endif %}
+{% endblock %}
