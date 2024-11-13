@@ -12,7 +12,7 @@ from .forms import SignUpForm
 from django.views import generic
 from random import randint
 from catshop.models import Product
-
+from django.db.models import Q
 
 
 
@@ -125,10 +125,17 @@ def cat(request,pk):
     # پیدا کردن دسته‌بندی‌های مرتبط از طریق Related_Products_For_Cat
     related_categories = Related_Products_For_Cat.objects.filter(cat=cat).values_list('category', flat=True)#ازvalues_list('category', flat=True) استفاده کردیم تا تنها آی‌دی‌های دسته‌بندی‌ها را به صورت یک لیست ساده دریافت کنیم.
     
-    related_products = Product.objects.filter(category_id__in=related_categories).distinct()
+    related_products = Product.objects.filter(category_id__in=related_categories).distinct()[:4]
 
     return render(request, 'cat.html', {'cat': cat, 'related_products': related_products})
 
+def cat_related_products(request,pk):
+    cat = Cat.objects.get(id=pk)
+    related_categories = Related_Products_For_Cat.objects.filter(cat=cat).values_list('category', flat=True)#ازvalues_list('category', flat=True) استفاده کردیم تا تنها آی‌دی‌های دسته‌بندی‌ها را به صورت یک لیست ساده دریافت کنیم.
+    
+    related_products = Product.objects.filter(category_id__in=related_categories).distinct()
+
+    return render(request, 'cat_related_products.html', {'cat': cat, 'related_products': related_products})
 
 def cat_category(request,cat):
     cat = cat.replace("-"," ")
@@ -143,5 +150,21 @@ def cat_category(request,cat):
 
 
 def cat_categorys(request):
+
+
     all_cat = Category.objects.all()
     return render(request, 'cat_categorys.html', {'categorys':all_cat})
+
+def search(request):
+    if request.method == 'POST':
+        searched = request.POST['searched']
+        searched_cat = Cat.objects.filter(Q(name__icontains=searched) | Q(personality__icontains=searched) | Q(country__icontains=searched) | Q(eyes_and_fur__icontains=searched) | Q(activity__icontains=searched)) 
+        searched_product =  Product.objects.filter(Q(name__icontains=searched) | Q(description__icontains=searched))
+
+        if not searched_cat.exists() and not searched_product.exists():
+             messages.success(request, ("نتیجه ای برای جستجوی شما یافت نشد"))
+             return render(request, 'search.html', {})
+        else:
+            return render(request, 'search.html', {'searched_cat':searched_cat ,'searched_product':searched_product})
+    
+    return render(request, 'search.html', {})

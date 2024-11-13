@@ -48,7 +48,7 @@
          
         <section class="py-5 bg-light">
             <div class="container px-4 px-lg-5 mt-5">
-                <h3 class="fw-bolder mb-4">مکمل های مناسب برای پیشیِ "{{ cat.name }}":</h3><br><br>
+                <h3 class="fw mb-4">مکمل های مناسب برای پیشیِ "{{ cat.name }}" :</h3><br><br>
                 <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
                     {% for product in related_products %}
                     {% if product.is_sale %}
@@ -110,6 +110,7 @@
                     </div>
                     {% endif %}
                     {% endfor %}
+                    <a href="{% url 'cat_related_products' cat.id %}" class="btn btn-outline-secondary">مشاهده مکمل های بیشتر</a>
                 </div>
             </div>
         </section>
