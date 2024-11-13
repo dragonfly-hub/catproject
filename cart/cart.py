@@ -16,8 +16,11 @@ class Cart:
         if product_id not in self.cart:
             self.cart[product_id] = {'product_count':0,
                                      'price':str(product.price)}
+
+        product_count = int(product_count)    
+
         if update_count:
-            self.cart[product_id]['product_count']=product_count 
+            self.cart[product_id]['product_count']=product_count
         else:
             self.cart[product_id]['product_count'] += product_count #اگه اپدیت نکرده بهش همون پیش فرضو اضافه کن  که مقدار پیش فرض یکه. در واقع این برای اضافه کردن دو باره به سبده
         self.save()

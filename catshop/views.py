@@ -12,14 +12,14 @@ def catshop_home(request):
 
 def product(request,pk):
     product = Product.objects.get(id=pk)
-    cart_add_product_form = CartAddProductForm()
+    cart_add_product_form = CartAddProductForm(stock=product.stock)
     related_products_category = product.category
      # انتخاب محصولات مرتبط در همان دسته‌بندی و حذف محصول اصلی از لیست
     related_products = Product.objects.filter(category=related_products_category).exclude(id=product.id)
      # انتخاب تصادفی چهار محصول مرتبط
     related_products = random.sample(list(related_products), min(4, len(related_products)))
     
-    return render(request , 'product.html',{'product':product, 'cart_add_product_form':cart_add_product_form,'related_products':related_products})
+    return render(request , 'product.html',{'product':product, 'cart_add_product_form':cart_add_product_form,'related_products':related_products, 'stock': product.stock})
 
 
 def category(request,cat):

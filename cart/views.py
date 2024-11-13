@@ -10,7 +10,7 @@ from . import forms
 def cart_add(request, product_id):
   cart = Cart(request)
   product = get_object_or_404(models.Product, id=product_id)
-  form = forms.CartAddProductForm(request.POST)
+  form = forms.CartAddProductForm(stock=product.stock, data=request.POST)
   if form.is_valid():
     form_data = form.cleaned_data
     cart.add(product=product,
@@ -22,6 +22,7 @@ def cart_detail(request):
   cart = Cart(request)
   for item in cart:#میتونیم فور بزنیم چون iterable
     item['update_product_count_form'] = forms.CartAddProductForm(
+      stock=item['product'].stock,
       initial={'product_count':item['product_count'],
                'update':True}
     )

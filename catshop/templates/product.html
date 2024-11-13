@@ -31,13 +31,18 @@
                             <p class="lead">{{ product.price | intcomma }} تومان</p>
                             {% endif %}
                             <br>
+                             {% if stock > 0 %}
+                            <p class="lead">موجود در انبار: {{ stock }} عدد</p>
                             <form method="POST" action="{% url 'cart:cart_add' product.id %}">
                                 {{ cart_add_product_form }}
                                 {% csrf_token %}
                                 <br>
                                 <input type="submit" value="افزودن به سبد خرید" class="btn btn-warning mt-auto">
                             </form>
-                        
+                             {% else %}
+                              <p class="text-danger fw-bold">اتمام موجودی</p>
+                             {% endif %}
+                            
                         </div>
                     </div>
                 </div>
