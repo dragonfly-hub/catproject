@@ -8,10 +8,10 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .forms import SignUpForm
+from .forms import SignUpForm, UpdateUserForm, UpdatePasswordForm, UpdateUserInfo
 from django.views import generic
 from random import randint
-from catshop.models import Product
+from catshop.models import Product, Profile
 from django.db.models import Q
 
 
@@ -111,13 +111,69 @@ def signup_user(request):
             user = authenticate(request, username=username, password=password1)
             login(request, user)
             messages.success(request, (" اکانت شما ساخته شد"))
-            return redirect("home")
+            return redirect("update_info")
         else:
             messages.success(request, (" مشکلی در ثبت نام شما وجود دارد" ))
             return redirect("signup")
     else:
         return render(request, 'signup.html', {'form':form})
 
+def update_user(request):
+
+
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        user_form = UpdateUserForm(request.POST or None , instance = current_user)#اطلاعاتی که پست کرده یا نکرده یا از قبل بوده
+        if user_form.is_valid():
+            user_form.save()
+            login(request, current_user)
+            messages.success(request , 'پروفایل شما ویرایش شد')
+            return redirect('home')
+        return render(request, 'update_user.html',{'user_form':user_form})#فرم هنوز پر نشده
+    else:
+       messages.success(request , 'ابتدا باید لاگین شوید')
+       return redirect('home') 
+
+def update_info(request):
+    if request.user.is_authenticated:
+        current_user = Profile.objects.get(user__id=request.user.id) #ممکنه ایدی یک مدل یوزر مساوی ایدی یک پروفایل نیس. برای همین
+        form = UpdateUserInfo(request.POST or None , instance = current_user)#اطلاعاتی که پست کرده یا نکرده یا از قبل بوده
+        if form.is_valid():
+            form.save()
+            messages.success(request , 'اطلاعات کاربری شما ویرایش شد')
+            return redirect('home')
+        return render(request, 'update_info.html',{'form':form})#فرم هنوز پر نشده
+    else:
+       messages.success(request , 'ابتدا باید لاگین شوید')
+       return redirect('home') 
+    
+
+
+def update_password(request):
+
+    if request.user.is_authenticated:
+        current_user = request.user
+
+        if request.method=='POST':
+            form = UpdatePasswordForm(current_user, request.POST)
+
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'رمز با موفقیت ویرایش شد')
+                login(request, current_user)
+                return redirect('update_user')
+            else:
+                for error in list(form.errors.values()):
+                    messages.error(request, error)
+                return redirect('update_password')
+
+        else:
+            form = UpdatePasswordForm(current_user)
+            return render(request, 'update_password.html',{'form':form})
+        
+    else:
+        messages.success(request , 'باید اول لاگین بشین!')
+        return redirect('home')
 
 
 def cat(request,pk):

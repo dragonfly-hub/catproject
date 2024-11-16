@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 import datetime
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save # اتوماتیک پروفایل ساخته بشه از این سیگنال استفاده میکنیم
 
 
 
@@ -23,6 +25,27 @@ class Customer(models.Model):
     def __str__(self) :
         return f'{self.first_name}{self.last_name}'
     
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    date_modified = models.DateTimeField(User, auto_now=True)# تاریخ اخرین ویرایش به صورت خودکار
+    phone = models.CharField(max_length=25, blank=True)
+    address1 = models.CharField(max_length=250, blank=True)
+    address2 = models.CharField(max_length=250, blank=True)
+    city = models.CharField(max_length=25, blank=True)
+    state = models.CharField(max_length=25, blank=True)
+    zipcode = models.CharField(max_length=25, blank=True)
+    country = models.CharField(max_length=25, default='IRAN')
+
+    def __str__(self) :
+        return self.user.username
+    
+def create_profile(sender, instance, created, **kwargs):
+        if created: # اگه از یوزر یکی ساخته شده بود
+            user_profile = Profile(user=instance)
+            user_profile.save()
+
+post_save.connect(create_profile, sender=User)           #وصل کردن این تابع بالا به مدل یوزر
+
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
