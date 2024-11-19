@@ -23,7 +23,7 @@ class Cat(models.Model):
     picture = models.ImageField(upload_to='upload/cat/')#در این مسیر اپلود شه
     
 
-    product_category = models.ManyToManyField(Catshop_Category) 
+    #product_category = models.ManyToManyField(Catshop_Category) 
 
 
     def __str__(self):
