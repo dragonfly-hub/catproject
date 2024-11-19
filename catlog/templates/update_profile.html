@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+ <!-- Header-->
+<header class="bg-dark py-5">
+     <div class="container px-4 px-lg-5 my-5">
+          <div class="text-center text-white">
+              <h1 class="display-4 fw-bolder">     کتلاگـِ من </h1>
+              <p class="lead fw-normal text-white-50 mb-0">  اطلاعات جدید خود را وارد کنید   </p>
+           </div>
+     </div>
+</header>
+<br><br>
+<div class="container">
+    <div class="row">
+        <center>
+            <div class="col-10">
+                <form method="POST"  enctype="multipart/form-data"  action="{% url 'update_profile' %}">
+                    {% csrf_token %}
+                       {{ form.as_p }}
+
+                       {% if profile_photo %}
+                       <div>
+                           <p>عکس پروفایل شما:</p>
+                           <img src="{{ profile_photo.url }}" alt="عکس پروفایل" style="max-width: 150px; border-radius: 10px;">
+                       </div>
+                       {% endif %}
+
+                       <br><br>
+                    <button type="submit" class="btn btn-secondary">  ثبت تغییرات  </button>
+                  </form>
+                  <br>
+            </div>
+        </center>
+    </div>
+</div>
+<br><br>
+{% endblock %}
+
+
+
+
+            

@@ -1,13 +1,10 @@
 from typing import Any
-from django.http import HttpRequest
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render, redirect
 from .models import Cat, Category, Related_Products_For_Cat
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-from django import forms
 from .forms import SignUpForm, UpdateUserForm, UpdatePasswordForm, UpdateUserInfo
 from django.views import generic
 from random import randint

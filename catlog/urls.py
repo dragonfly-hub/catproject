@@ -6,6 +6,8 @@ from .views import (
        UpdatePost,
        DeletePost,
        search_catlog,
+       update_profile,
+       my_posts,
       )
 
 
@@ -17,6 +19,8 @@ urlpatterns = [
     path('post/update/<int:pk>',UpdatePost.as_view(),name='update_post'),
     path('post/delete/<int:pk>',DeletePost.as_view(),name='delete_post'),
     path('cearch-catlog/',search_catlog,name='search_catlog'),
+    path('update_profile/',update_profile,name='update_profile'),
+    path('my-posts/',my_posts, name='my_posts'),
 
 
 ]

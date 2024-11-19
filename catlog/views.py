@@ -1,8 +1,8 @@
 from django.shortcuts import render,redirect
 from django.views.generic import View, CreateView, DetailView ,FormView
 from django.views.generic.edit import UpdateView, DeleteView
-from .models import Post
-from .forms import PostForm, CommentForm
+from .models import Post,Profile
+from .forms import PostForm, CommentForm, UpdateUserProfile
 from django.urls import reverse_lazy,reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
@@ -10,6 +10,9 @@ from django.db.models import Q
 #با کیو میتونیم عبارت های منطقی مثل اند و اور و نات درست کنیم و کوئری مهمیه
 from django.core.paginator import Paginator
 from django.views.generic.detail import SingleObjectMixin # بوسیله این میتونیم محتوایی که اتک شده به یک یوار ال رو بگیریم
+from django.dispatch import receiver
+from django.db.models.signals import pre_delete
+from django.contrib.auth.decorators import login_required
 
 
 class CatlogHome(View):
@@ -18,17 +21,31 @@ class CatlogHome(View):
     paginate_by = 2
 
     def get(self,request):
+         # لیست پست‌ها
         posts = Post.objects.all()
         paginator = Paginator(posts, self.paginate_by)#  همه پست هارو میخونه  و براساس اینکه گفتیم چندتا چندتا تویه صفحه قرار بده یه شی به نام پجینیتور میسازه. پس پجینیتور ما شامل یه تعداد صفحه میشه که تو هر صفحه یه تعداد پست قرار گرفته
 
         page_number = request.GET.get('page')# شماره صفحه . به سراغ ریکوئست کاربر از نوع گت میریم . پیج را ازش استخراج میکنیم این پیج از طریق همون ریکوئست کاربر بما میرسع و میفرسته
         page_obj = paginator.get_page(page_number) #با متد گت پیج برو  شماره پیجی که کاربر میخواد استخراج کن بریز تو این
+           
+          # اطلاعات پروفایل کاربر
+        user_profile = None
+        if request.user.is_authenticated:  # اگر کاربر لاگین باشد
+            try:
+                user_profile = Profile.objects.get(user=request.user)  # پروفایل کاربر
+            except Profile.DoesNotExist:
+                user_profile = None  # اگر پروفایل تعریف نشده باشد
+
+
 
         context = {
-            'post_list': page_obj
+            'post_list': page_obj,
+            'user_profile': user_profile,
         }
         return render(request, self.template_name, context )
+    
 
+    
 
 class CommentGet(DetailView):
     model = Post
@@ -115,6 +132,7 @@ class DeletePost(DeleteView):
      
 
 def search_catlog(request):
+
     if request.method == 'POST':
        searched_catlog = request.POST['searched-catlog']
        searched_catlog = Post.objects.filter(Q(cat_name__icontains=searched_catlog) | Q(title__icontains=searched_catlog) | Q(excerpt__icontains=searched_catlog) | Q(body__icontains=searched_catlog))#icontains یعنی به حروف بزرک و کوچیک حساس نباش
@@ -124,3 +142,34 @@ def search_catlog(request):
           return redirect("catlog") 
        else:
           return render(request, 'search_catlog.html',{'searched_catlog':searched_catlog})
+       
+
+def update_profile(request):
+    if request.user.is_authenticated:
+        current_user = Profile.objects.get(user__id=request.user.id)
+        form = UpdateUserProfile(request.POST or None , request.FILES or None, instance = current_user)#اطلاعاتی که پست کرده یا نکرده یا از قبل بوده
+        if form.is_valid():
+            form.save()
+            messages.success(request , 'پروفایل کتلاگـِ شما ویرایش شد')
+            return redirect('catlog')
+        return render(request, 'update_profile.html',{'form':form ,'profile_photo': current_user.photo})#فرم هنوز پر نشده
+    else:
+       messages.success(request , 'ابتدا باید لاگین شوید')
+       return redirect('catlog') 
+    
+
+@receiver(pre_delete, sender=Profile)
+def delete_profile_photo(sender, instance, **kwargs):
+    if instance.photo:
+        instance.photo.delete(False) #این کد تضمین می‌کند که وقتی یک عکس از پروفایل حذف می‌شود، فایل فیزیکی نیز از سیستم حذف شود.
+
+
+@login_required
+def my_posts(request):
+    posts = Post.objects.filter(writer=request.user)  # فیلتر کردن پست‌های نوشته شده توسط کاربر
+    user_profile = Profile.objects.get(user=request.user)
+    context = {
+        'posts': posts,
+        'user_profile': user_profile,
+    }
+    return render(request, 'my_posts.html', context)

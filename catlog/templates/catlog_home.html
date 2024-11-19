@@ -4,15 +4,10 @@
   <header class="bg-dark py-5">
     <div class="container px-4 px-lg-5 my-5">
          <div class="text-center text-white">
-             <h1 class="display-4 fw-bolder"> کتلاگ! </h1>
+             <h1 class="display-4 fw-bolder"> کتلاگــ! </h1>
              <p class="lead fw-normal text-white-50 mb-0"> اینجا میتونی درباره گربه خونگیت پست بزاری </p>
           </div>
           <br><br>          
-         {% if user.is_authenticated %}
-           <center><a href="{% url 'new_post' %}" class="btn btn-outline-warning btn-lg px-3"  role="button" > افزودن پست جدید </a></center>
-         {% else %}
-           <center><a href="{% url 'login' %}" class="btn btn-outline-light btn-lg px-4"  role="button" >لاگین کن تا پست بزاری!</a></center>
-         {% endif %}
     </div>
 </header>
 <br><br>
@@ -82,6 +77,48 @@
         </div>
         <!-- Side widgets-->
         <div class="col-lg-4">
+            
+          <!-- Side widget-->
+            <div class="card mb-4">
+                {% if user.is_authenticated %}
+                <div class="card-header">پروفایل من</div>
+                {% if user_profile.photo %}
+                <div class="profile-photo-container" style="text-align: center; margin-top: 10px;">
+                    <img src="{{ user_profile.photo.url }}" alt="عکس پروفایل" 
+                         style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #ccc;">
+                </div>
+                {% else %}
+                <br>
+                <center> <img src="https://via.placeholder.com/150" alt=""
+                     style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #ccc;"></center>
+                {% endif %}
+                <center><div class="font-monospace" role="alert"><b>{{ user_profile.user.username }} </b></div> </center>
+                <center><p class="text-lowercase"><small>{{ user_profile.biography }} </small></p></center>
+                <div class="d-flex justify-content-center align-items-center mt-3">
+                    <a href="{% url 'new_post' %}" 
+                       class="btn btn-sm btn-primary mx-2 text-decoration-none" 
+                       role="button">
+                        افزودن پست جدید
+                    </a>
+                    <a href="{% url 'update_profile' %}" 
+                       class="btn btn-sm btn-secondary mx-2 text-decoration-none" 
+                       role="button">
+                        ویرایش پروفایل
+                    </a>
+                </div>
+                <div class="d-flex justify-content-center align-items-center mt-3">
+                <a href="{% url 'my_posts' %}" 
+                class="btn btn-outline-secondary"
+                role="button">
+                 پست‌های من
+                </a></div>
+                <div class="card-body"></div>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn btn-light btn-lg px-4"  role="button" >لاگین کن تا پست بزاری!</a>
+                {% endif %}
+            </div>
+
+
             <!-- Search widget-->
             <div class="card mb-4">
                 <div class="card-header">جستجو</div>
@@ -100,12 +137,8 @@
                 {% include 'catlog_sidebar.html' %}
              {% endblock sidebar %}
 
-
-            <!-- Side widget-->
-            <div class="card mb-4">
-                <div class="card-header">Side Widget</div>
-                <div class="card-body">You can put anything you want inside of these side widgets. They are easy to use, and feature the Bootstrap 5 card component!</div>
-            </div>
+            
+           
         </div>
     </div>
 </div>
