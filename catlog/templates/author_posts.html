@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<header class="bg-white py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-dark">
+
+
+            <!-- Profile Section -->
+            <div class="row align-items-center">
+                <!-- Profile Photo -->
+                <div class="col-md-3 text-center">
+                    {% if author_profile.photo %}
+                        <img src="{{ author_profile.photo.url }}" alt="عکس پروفایل"
+                             style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #ccc;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/150" alt="عکس پروفایل"
+                             style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #ccc;">
+                    {% endif %}
+                </div>
+
+                <!-- User Info -->
+                <div class="col-md-9">
+                    <h3 class="mb-1">{{ author.username }}</h3>
+                    <p class="text-muted mb-2">{{ auther.biography }}</p>
+                    <p>تعداد پست‌ها: <strong>{{ posts.count }}</strong></p>
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            <br><br>
+            <!-- User's Posts -->
+            {% if posts %}
+                <div class="row">
+                    <div class="col-lg-8">
+                        {% for post in posts %}
+                            <div class="card mb-4">
+                                <a href="{% url 'post_detail' post.pk %}">
+                                    <img class="card-img-top" src="{{ post.picture.url }}" alt="{{ post.title }}">
+                                </a>
+                                <div class="card-body">
+                                    <div class="small text-muted">{{ post.writer }}, {{ post.date }}</div>
+                                    <a class="text-decoration-none link-dark stretched-link" href="{% url 'post_detail' post.pk %}">
+                                        <h2 class="card-title">{{ post.title }}</h2>
+                                    </a>
+                                    <br>
+                                    <p class="card-text">{{ post.excerpt }}</p>
+                                    <a class="btn btn-primary" href="{% url 'post_detail' post.pk %}">→مشاهده پست </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <p>هیچ پستی هنوز ایجاد نشده .</p>
+            {% endif %}
+
+        </div>
+    </div>
+</header>
+
+{% endblock content %}

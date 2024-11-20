@@ -32,6 +32,34 @@
                     <a class="badge bg-primary text-decoration-none link-light " href="{% url 'update_post' post.pk %}">ویرایش </a>
                     <a class="badge bg-danger text-decoration-none link-light " href="{% url 'delete_post' post.pk %}">حذف</a>
                     {% endif %}
+                     
+
+
+
+                    <br><br>
+                    <div dir="ltr">
+                    <form action="{% url 'toggle_like' post.pk %}" method="POST" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" style="border: none; background: none; cursor: pointer;">
+                            {% if request.user in post.likes.all %}
+
+                                <button class="btn btn-outline-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                  </svg></button> &nbsp; {% if post.total_likes > 1 %} {{ post.total_likes }} likes 
+                                  {% else %}  {{ post.total_likes }} like {% endif %}
+
+                            {% else %}
+
+                                <button class="btn btn-outline-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                  </svg></button> &nbsp; {% if post.total_likes > 1 %} {{ post.total_likes }} likes 
+                                                    {% else %}  {{ post.total_likes }} like {% endif %} 
+
+                            {% endif %}
+                        </button>
+                    </form>
+                </div>
+                    
                     <br><br><br>
                 </article>
 
@@ -54,9 +82,18 @@
                     <br>
 
                     {% if post.comment_set.count > 1 %}
-                    <h6 class="comments-count">{{ post.comment_set.count }} Comments</h6>
-                    {% else %}
-                    <h6 class="comments-count">{{ post.comment_set.count }} Comment</h6>
+                    <h6 class="comments-count">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-fill" viewBox="0 0 16 16">
+                            <path d="M2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                          </svg> {{ post.comment_set.count }} Comments</h6>
+                        
+                        
+                    {% else %}<h6 class="comments-count"></h6>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-heart" viewBox="0 0 16 16">
+                        <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                        <path d="M8 3.993c1.664-1.711 5.825 1.283 0 5.132-5.825-3.85-1.664-6.843 0-5.132"/>
+                      </svg> {{ post.comment_set.count }} Comment</h6>
+                    
                     {% endif %}
 
                     <!-- Comments section-->
@@ -86,15 +123,50 @@
 
             <!-- Side widgets-->
             <div class="col-lg-4">
+                <!-- Side widget-->
+                <div class="card mb-4">
+                    <div class="card-body">
+                     {% if post.writer == request.user %}
+                        <center><a href="{% url 'author_posts' post.writer.id %}" class="btn btn-light btn-lg px-4"  role="button" >پست های دیگر من</a> </center>
+                            {% if author_profile.photo %}
+                                <div class="profile-photo-container" style="text-align: center; margin-top: 10px;">
+                                   <img src="{{ author_profile.photo.url }}" alt="عکس پروفایل" 
+                                   style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #ccc;">
+                                </div>
+                            {% else %}
+                               <div class="profile-photo-container" style="text-align: center; margin-top: 10px;">
+                                 <center> <img src="https://via.placeholder.com/150" alt=""
+                                 style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #ccc;"></center>
+                                </div>
+                            {% endif %}
+
+
+
+                        {% else %}
+                        <center><a href="{% url 'author_posts' post.writer.id %}" class="btn btn-light btn-lg px-4"  role="button" >پست های دیگر {{ post.writer }}</a> </center>
+                        {% if author_profile.photo %}
+                        <div class="profile-photo-container" style="text-align: center; margin-top: 10px;">
+                           <img src="{{ author_profile.photo.url }}" alt="عکس پروفایل" 
+                           style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #ccc;">
+                        </div>
+                          {% else %}
+                            <div class="profile-photo-container" style="text-align: center; margin-top: 10px;">
+                              <center> <img src="https://via.placeholder.com/150" alt=""
+                              style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #ccc;"></center>
+                            </div>
+                          {% endif %}
+
+
+
+                     {% endif %}
+                    </div>
+                </div>
+
                 {% block sidebar %}
                 {% include 'catlog_sidebar.html' %}
                 {% endblock sidebar %}
 
-                <!-- Side widget-->
-                <div class="card mb-4">
-                    <div class="card-header">Side Widget</div>
-                    <div class="card-body">You can put anything you want inside of these side widgets. They are easy to use, and feature the Bootstrap 5 card component!</div>
-                </div>
+                
             </div> <!-- End of sidebar (col-lg-4) -->
         </div> <!-- End of row -->
     </div> <!-- End of container -->

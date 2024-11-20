@@ -8,6 +8,8 @@ from .views import (
        search_catlog,
        update_profile,
        my_posts,
+       author_posts,
+       toggle_like,
       )
 
 
@@ -21,6 +23,8 @@ urlpatterns = [
     path('cearch-catlog/',search_catlog,name='search_catlog'),
     path('update_profile/',update_profile,name='update_profile'),
     path('my-posts/',my_posts, name='my_posts'),
+    path('author/<int:author_id>/posts/', author_posts, name='author_posts'),
+    path('post/<int:pk>/like/', toggle_like, name='toggle_like'),
 
 
 ]

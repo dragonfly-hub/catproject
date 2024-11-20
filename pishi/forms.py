@@ -109,12 +109,14 @@ class SignUpForm(UserCreationForm):
     first_name = forms.CharField(
         label="",
         max_length=50,
-        widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'نام خود را وارد کنید '})
+        widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'نام خود را وارد کنید '}),
+        required=False
     )
     last_name = forms.CharField(
         label="",
         max_length=50,
-        widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'نام خانوادگی خود را وارد کنید '})
+        widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'نام خانوادگی خود را وارد کنید '}),
+        required=False
     )
     email = forms.EmailField(
         label="",

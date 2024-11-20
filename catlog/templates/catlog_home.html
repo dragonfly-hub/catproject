@@ -7,7 +7,7 @@
              <h1 class="display-4 fw-bolder"> کتلاگــ! </h1>
              <p class="lead fw-normal text-white-50 mb-0"> اینجا میتونی درباره گربه خونگیت پست بزاری </p>
           </div>
-          <br><br>          
+          <br>     
     </div>
 </header>
 <br><br>
@@ -26,6 +26,20 @@
                     <a class="text-decoration-none link-dark stretched-link" href="{% url 'post_detail' post.pk %}"><h2 class="card-title">{{ post.title }}</h2></a>
                     <br>
                     <p class="card-text">{{ post.excerpt }}</p>
+                    <br>
+
+
+                    {{ post.total_likes }}  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                      </svg>
+                      &nbsp;
+                      {{ post.comment_count }} &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-fill" viewBox="0 0 16 16">
+                        <path d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9 9 0 0 0 8 15"/>
+                      </svg>
+
+
+                       <br><br>
+                  
                     <a class="btn btn-primary" href="{% url 'post_detail' post.pk %}"> →مشاهده پست </a>
                 </div>
             </div>

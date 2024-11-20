@@ -37,6 +37,11 @@ class Post(models.Model):
     date = models.DateField(default=date.today)
     picture = models.ImageField(upload_to='upload/%y/%m/%d')
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
+    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True,null=True)
+
+
+    def total_likes(self):
+        return self.likes.count()
 
     def __str__(self):
         return self.title

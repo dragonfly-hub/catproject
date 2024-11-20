@@ -13,6 +13,9 @@ from django.views.generic.detail import SingleObjectMixin # بوسیله این 
 from django.dispatch import receiver
 from django.db.models.signals import pre_delete
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+
 
 
 class CatlogHome(View):
@@ -37,6 +40,13 @@ class CatlogHome(View):
                 user_profile = None  # اگر پروفایل تعریف نشده باشد
 
 
+         # اضافه کردن تعداد کامنت به هر پست
+        posts_with_comments = []
+        for post in page_obj:
+            post.comment_count = post.comment_set.count()
+            posts_with_comments.append(post)
+
+
 
         context = {
             'post_list': page_obj,
@@ -54,7 +64,11 @@ class CommentGet(DetailView):
 
     def get_context_data(self, **kwargs):# متد موجود توی دیتیل ویو . میره دیکشنری کانتکس که اطلاعات موجود برای نمایش توی صفحه داره برای ما استخراج میکنه و میاره تا ما در کنار این اطلاعات فرم کامنت رو نشون بدیم. چون همه چیو داره ولی فرم رو نداره میخواهیم بهش فرم رو بدیم
         context = super().get_context_data(**kwargs)# از سوپر یا دیتیل ویو این متد رو استخراج میکنه و این متد دیکشنری کانتکس رو برای ما مقدار میده
+        post = self.get_object()
         context['form'] = CommentForm()# بهش میگیم توی کانتکس یه مقدار یا فیلد جدید بهش اضافه کن یعنی به همه ی محتوای پست حالا فرم رو هم اضافه کن و از کامنت فرم اون فرم رو بگیر
+        context['author_profile'] = Profile.objects.get(user=post.writer)
+        context['like_count'] = post.total_likes()
+        
         return context
         #این کلاس مسئول پاسخ دهی به گت ریکوئست هست
 
@@ -173,3 +187,31 @@ def my_posts(request):
         'user_profile': user_profile,
     }
     return render(request, 'my_posts.html', context)
+
+
+@login_required
+def author_posts(request, author_id):
+    author = get_object_or_404(User, id=author_id)
+    author_profile = get_object_or_404(Profile, user=author)  # فرض می‌کنیم هر نویسنده یک پروفایل دارد
+    posts = Post.objects.filter(writer=author)
+
+    context = {
+        'author': author,
+        'author_profile': author_profile,
+        'posts': posts,
+    }
+    return render(request, 'author_posts.html', context)
+
+
+@login_required
+def toggle_like(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    
+    # اگر کاربر قبلاً لایک کرده باشد، حذف می‌شود
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)
+    else:
+        post.likes.add(request.user)
+
+    # هدایت به صفحه جزئیات پست
+    return redirect('post_detail', pk=post.pk)
