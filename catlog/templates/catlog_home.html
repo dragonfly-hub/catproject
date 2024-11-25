@@ -22,7 +22,7 @@
             <div class="card mb-4" style="width: 19cm; height: auto;">
                 <a href="{% url 'post_detail' post.pk %}"><img class="card-img-top" src="{{ post.picture.url }}" alt="..."   /></a>
                 <div class="card-body">
-                    <div class="small text-muted">{{ post.writer }},  {{ post.date }}</div>
+                    <div class="small text-muted" dir="ltr">{{ post.writer }},  {{ post.date }}</div>
                     <a class="text-decoration-none link-dark stretched-link" href="{% url 'post_detail' post.pk %}"><h2 class="card-title">{{ post.title }}</h2></a>
                     <br>
                     <p class="card-text">{{ post.excerpt }}</p>

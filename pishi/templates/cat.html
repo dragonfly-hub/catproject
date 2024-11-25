@@ -57,7 +57,11 @@
                              <!-- Sale badge-->
                              <div class="badge bg-danger text-white position-absolute" style="top: 0.5rem; right: 0.5rem">تخفیف ویژه</div>
                             <!-- Product image-->
+                            {% if product.stock > 0 %}
                             <img class="card-img-top" src="{{ product.picture.url }}" alt="..." />
+                            {% else %}
+                            <img class="card-img-top" src="{{ product.picture.url }}" alt="..." style="filter: grayscale(100%); transition: filter 0.3s ease; " />
+                            {% endif %}
                             <!-- Product details-->
                             <div class="card-body p-4">
                                 <div class="text-center">
@@ -85,7 +89,11 @@
                     <div class="col mb-5">
                         <div class="card h-100">
                             <!-- Product image-->
+                            {% if product.stock > 0 %}
                             <img class="card-img-top" src="{{ product.picture.url }}" alt="..." />
+                            {% else %}
+                            <img class="card-img-top" src="{{ product.picture.url }}" alt="..." style="filter: grayscale(100%); transition: filter 0.3s ease; " />
+                            {% endif %}
                             <!-- Product details-->
                             <div class="card-body p-4">
                                 <div class="text-center">

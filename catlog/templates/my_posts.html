@@ -8,9 +8,9 @@
 
 
             <!-- Profile Section -->
-            <div class="row align-items-center">
+            <div class="row align-items-center" >
                 <!-- Profile Photo -->
-                <div class="col-md-3 text-center">
+                <div class="col-md-3 text-center" >
                     {% if user_profile.photo %}
                         <img src="{{ user_profile.photo.url }}" alt="عکس پروفایل"
                              style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #ccc;">
@@ -54,6 +54,13 @@
                 </div>
             {% else %}
                 <p>هیچ پستی هنوز ارسال نکرده‌اید.</p>
+                <div class="d-flex justify-content-center align-items-center mt-3">
+                    <a href="{% url 'new_post' %}" 
+                       class="btn btn-sm btn-primary mx-2 text-decoration-none" 
+                       role="button">
+                        افزودن پست جدید
+                    </a>
+                </div> 
             {% endif %}
 
         </div>
