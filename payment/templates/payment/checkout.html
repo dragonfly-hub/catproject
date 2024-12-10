@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block content%}
+<header class="bg-dark py-5">
+  <div class="container px-4 px-lg-5 my-5">
+    <div class="text-center text-white">
+      <h1 class="display-4 fw-bolder">صورتحساب</h1>
+      <p class="lead fw-normal text-white-50 mb-0">لطفا سفارشتون رو چک کنید</p>
+    </div>
+  </div>
+</header>
+<br />
+<div class="container">
+  <div class="row">
+    <center>
+      <div class="col-10">
+        <div class="card">
+          <div class="card-header">خلاصه سفارشات شما:</div>
+          <div class="card-body">
+            {% for item in cart %}
+              {% with product=item.product %}
+
+                  {{ product.name }} <br>
+                   
+                  <small>
+                    قیمت:
+                  {% if product.is_sale %}
+                   {{ product.sale_price|intcomma }}
+                  {% else %}
+                   {{ product.price|intcomma }}
+                  {% endif %}
+                  </small> <br>
+
+                  <small> تعداد: {{ item.product_count }}</small><br>
+                  <hr>
+
+              {% endwith %}
+             {% endfor %}
+             <strong>مجموع کل سفارشات {{ cart.get_total_price|intcomma }}</strong>
+             <br>
+             <a href="{% url 'cart:cart_detail' %}" class="btn btn-sm btn-outline-secondary">ویرایش سفارش</a>
+
+          </div>
+        </div>
+        <br />
+        <div class="card">
+          <div class="card-header">
+            مشخصات ارسال:
+        </div>
+          <div class="card-body">
+            {{ shipping_form.as_p }}
+        </div>
+        </div>
+      </div>
+      <br>
+      <a href="#" class="btn btn-sm btn-outline-secondary" >ادامه برای ثبت سفارش</a>
+    </center>
+  </div>
+</div>
+
+<br /><br /><br /><br />
+
+{% endblock %}

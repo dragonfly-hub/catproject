@@ -7,7 +7,8 @@ import random
 
 def catshop_home(request):
     all_products = Product.objects.all()
-    return render(request , 'catshop_home.html',{'products':all_products})
+    new_products = Product.objects.filter(stock__gt=0).order_by('-id')[:4]  # فقط محصولات با موجودی > 0
+    return render(request , 'catshop_home.html',{'products':all_products,'new_products': new_products})
 
 
 def product(request,pk):

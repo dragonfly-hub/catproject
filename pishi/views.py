@@ -10,7 +10,8 @@ from django.views import generic
 from random import randint
 from catshop.models import Product, Profile
 from django.db.models import Q
-
+from payment.forms import ShippingForm
+from payment.models import ShippingAddress
 
 
 def helloworld(request):
@@ -134,12 +135,21 @@ def update_user(request):
 def update_info(request):
     if request.user.is_authenticated:
         current_user = Profile.objects.get(user__id=request.user.id) #ممکنه ایدی یک مدل یوزر مساوی ایدی یک پروفایل نیس. برای همین
+        shippping_user = ShippingAddress.objects.get(user__id = request.user.id)
+
+
         form = UpdateUserInfo(request.POST or None , instance = current_user)#اطلاعاتی که پست کرده یا نکرده یا از قبل بوده
-        if form.is_valid():
+        shipping_form = ShippingForm(request.POST or None , instance = shippping_user)
+
+
+        if form.is_valid() or shipping_form.is_valid():
             form.save()
+            shipping_form.save()
+
+
             messages.success(request , 'اطلاعات کاربری شما ویرایش شد')
             return redirect('home')
-        return render(request, 'update_info.html',{'form':form})#فرم هنوز پر نشده
+        return render(request, 'update_info.html',{'form':form,'shipping_form':shipping_form})#فرم هنوز پر نشده
     else:
        messages.success(request , 'ابتدا باید لاگین شوید')
        return redirect('home') 

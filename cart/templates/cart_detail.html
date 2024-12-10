@@ -63,7 +63,9 @@
   {% endfor %}
   <div class="container"><a class="btn btn-outline-warning" href="{% url 'catshop_home' %}"><strong>+</strong> افزودن به سفارشات</a>
   <br><br><br><br><br>
-  <h3>مجموع کل سفارشات : {{ cart.get_total_price|intcomma }} تومان</h3></div>
+  <h3>مجموع کل سفارشات : {{ cart.get_total_price|intcomma }} تومان</h3>
+  <br>
+  <a href="{% url 'checkout' %}" class="btn btn-success">صورتحساب</a></div>
   <br><br><br>
   
 {% else %}

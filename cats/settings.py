@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'catlog',
     'catshop',
     'cart',
+    'payment',
 ]
 
 MIDDLEWARE = [

@@ -14,13 +14,21 @@
     <div class="row">
         <center>
             <div class="col-10">
+                <strong>اطلاعات کاربری</strong>
+                <br><br>
                 <form method="POST"  action="{% url 'update_info' %}">
                     {% csrf_token %}
                        {{ form.as_p }}
                        <br><br>
-                    <button type="submit" class="btn btn-secondary">  ویرایش  </button>
-                  </form>
-                  <br>
+                 
+
+                  <strong>اطلاعات ارسال</strong>
+                  <br><br>
+                         {{ shipping_form.as_p }}
+                         <br><br>
+                      <button type="submit" class="btn btn-secondary">  ویرایش  </button>
+                </form>
+                <br>
             </div>
         </center>
     </div>
