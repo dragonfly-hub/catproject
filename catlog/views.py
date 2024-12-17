@@ -15,7 +15,7 @@ from django.db.models.signals import pre_delete
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
-
+from django.http import JsonResponse
 
 
 class CatlogHome(View):
@@ -25,7 +25,7 @@ class CatlogHome(View):
 
     def get(self,request):
          # لیست پست‌ها
-        posts = Post.objects.all()
+        posts = Post.objects.all().order_by('-date')
         paginator = Paginator(posts, self.paginate_by)#  همه پست هارو میخونه  و براساس اینکه گفتیم چندتا چندتا تویه صفحه قرار بده یه شی به نام پجینیتور میسازه. پس پجینیتور ما شامل یه تعداد صفحه میشه که تو هر صفحه یه تعداد پست قرار گرفته
 
         page_number = request.GET.get('page')# شماره صفحه . به سراغ ریکوئست کاربر از نوع گت میریم . پیج را ازش استخراج میکنیم این پیج از طریق همون ریکوئست کاربر بما میرسع و میفرسته
@@ -205,14 +205,18 @@ def author_posts(request, author_id):
 
 @login_required
 def toggle_like(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+  if request.method == 'POST':
+      post = get_object_or_404(Post, pk=pk)
     
     # اگر کاربر قبلاً لایک کرده باشد، حذف می‌شود
-    if request.user in post.likes.all():
+      if request.user in post.likes.all():
         post.likes.remove(request.user)
-        
-    else:
+        liked = False
+      else:
         post.likes.add(request.user)
+        liked = True
 
-    # هدایت به صفحه جزئیات پست
-    return redirect('post_detail', pk=post.pk)
+    # تعداد لایک‌های پست
+      like_count = post.likes.count()
+      return JsonResponse({'liked': liked, 'like_count': like_count})
+  return JsonResponse({'error': 'Invalid request'}, status=400)
