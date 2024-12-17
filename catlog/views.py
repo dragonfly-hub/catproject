@@ -210,6 +210,7 @@ def toggle_like(request, pk):
     # اگر کاربر قبلاً لایک کرده باشد، حذف می‌شود
     if request.user in post.likes.all():
         post.likes.remove(request.user)
+        
     else:
         post.likes.add(request.user)
 
