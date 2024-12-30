@@ -34,12 +34,8 @@
                     {% endif %}
                      
 
-                    <div dir="rtl">
-                        <button class="btn btn-outline-dark mt-auto" onclick="history.back()">بازگشت به صفحه قبلی</button>
-                    </div>
-                    
 
-
+                  
 
                     <br><br>
                    <!-- دکمه لایک -->
@@ -53,6 +49,26 @@
     </button>
     <span id="like-count-{{ post.pk }}">{{ post.likes.count }}</span>  like
 </div>
+
+
+  
+
+
+<br><br>
+<div class="text-end mb-3">
+    <a class="btn btn-outline-dark" href="{{ previous_url|default:catlog_url }}">
+        بازگشت به صفحه قبلی
+    </a>
+</div>
+
+
+<!--HTTP_REFERER توسط مرورگر ارسال می‌شود و امکان دستکاری آن وجود دارد. برای جلوگیری از مشکلات امنیتی و مطمئن بودن، همیشه یک مقدار پیش‌فرض مشخص کنید (مانند صفحه اصلی).-->
+<!--پس از اعمال تغییرات، در صفحه پست یک دکمه بازگشت نمایش داده خواهد شد که کاربر را به صفحه قبلی برمی‌گرداند. در صورتی که هیچ URL قبلی موجود نباشد، به صفحه اصلی یا مسیری که شما مشخص کرده‌اید هدایت می‌شود.-->
+
+
+
+
+
                     
                     <br><br><br>
                 </article>
@@ -65,6 +81,7 @@
                         <div class="card-body">
                             <form method="POST">
                                 {% csrf_token %}
+                                <input type="hidden" name="previous_url" value="{{ request.META.HTTP_REFERER }}">
                                 {{ form | crispy }}
                                 <br>
                                 <button type="submit" class="btn btn-secondary">ارسال کامنت</button>
