@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<header class="bg-dark py-5">
+  <div class="container px-4 px-lg-5 my-5">
+    <div class="text-center text-white">
+      <h1 class="display-4 fw-bolder">تایید نهایی</h1>
+      <p class="lead fw-normal text-white-50 mb-0">  یه بار دیگه چک کنید همه چی درست باشه  </p>
+    </div>
+  </div>
+</header>
+<br />
+<div class="container">
+  <div class="row">
+    <center>
+      <div class="col-10">
+        <div class="card">
+          <div class="card-header">خلاصه سفارشات شما:</div>
+          <div class="card-body">
+
+            {% for item in cart_final %}
+            <p>
+              <strong>نام محصول:</strong> {{ item.product_name }} <br>
+              <small>
+                <strong>قیمت:</strong>
+                  {{ item.price|floatformat:0|intcomma }}
+              </small> <br>
+              <small><strong>تعداد:</strong> {{ item.product_count }}</small><br>
+            </p>
+            <hr>
+          {% endfor %}
+          <strong>مجموع کل سفارشات:</strong> {{ total_price|floatformat:0|intcomma }} تومان<br>
+            <br>
+          </div>
+        </div>
+        <br />
+        <div class="card">
+          <div class="card-header">مشخصات ارسال:</div>
+          <div class="card-body">
+            نام و نام خانوادگی: {{ shipping_info.shipping_full_name }} <br>
+            ایمیل: {{ shipping_info.shipping_email }} <br>
+            تلفن: {{ shipping_info.shipping_phone }} <br>
+            آدرس1: {{ shipping_info.shipping_address1 }} <br>
+            آدرس2: {{ shipping_info.shipping_address2 }} <br>
+            شهر: {{ shipping_info.shipping_city }} <br>
+            منطقه: {{ shipping_info.shipping_state }} <br>
+            کد پستی: {{ shipping_info.shipping_zipcode }} <br>
+            کشور: {{ shipping_info.shipping_country }} <br>
+          </div>
+        </div>
+      </div>
+      <br>
+      <a href="#" class="btn btn-sm btn-outline-secondary">ادامه برای ثبت سفارش</a>
+    </center>
+  </div>
+</div>
+<br /><br /><br /><br />
+{% endblock %}

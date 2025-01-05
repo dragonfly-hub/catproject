@@ -47,7 +47,7 @@
             {% endif %}
           </p>
 
-          <p class="card-text">قیمت کل: {{ item.total_price|intcomma }} تومان</p>
+          <p class="card-text">قیمت کل: {{ item.total_price|floatformat:0|intcomma }} تومان</p>
 
           
            <a  href="{% url 'cart:cart_remove' product.id %}" class="btn btn-outline-danger btn-sm">
@@ -63,7 +63,7 @@
   {% endfor %}
   <div class="container"><a class="btn btn-outline-warning" href="{% url 'catshop_home' %}"><strong>+</strong> افزودن به سفارشات</a>
   <br><br><br><br><br>
-  <h3>مجموع کل سفارشات : {{ cart.get_total_price|intcomma }} تومان</h3>
+  <h3>مجموع کل سفارشات : {{ cart.get_total_price|floatformat:0|intcomma }} تومان</h3>
   <br>
   <a href="{% url 'checkout' %}" class="btn btn-success">صورتحساب</a></div>
   <br><br><br>

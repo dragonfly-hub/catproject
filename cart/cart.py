@@ -70,14 +70,18 @@ class Cart:
             cart_item = self.cart[str(product.id)] #ایجاد محصولات برای حساب هزینه
 
             if product.is_sale:
-                cart_item['price'] = Decimal(product.sale_price)
+                cart_item['price'] = float(product.sale_price)
 
             else:
-                cart_item['price'] = Decimal(product.price)
+                cart_item['price'] = float(product.price)
 
-            cart_item['product'] = product
-
+            cart_item['product_count'] = cart_item['product_count']  # تعداد محصول
             cart_item['total_price'] = cart_item['price'] * cart_item['product_count']
+            
+             # افزودن ویژگی‌های دیگر از مدل محصول
+            cart_item['product'] = product  # ذخیره شیء محصول برای دسترسی به دیگر ویژگی‌ها
+
+           
 
             yield cart_item #دیگه نمیاد همه حلقه رو لوپ بزنه بعد نتیجه رو بما بده . اون چیزی که میخوایم اون لحظه ریکوئست مارو جواب میده . برای لیزی لودینگ ازش استفاده میشه . برای وقتایی که یه لیست خیلی بزرگ داشته باشیم و... ا
 
@@ -89,4 +93,7 @@ class Cart:
 
 
     def get_total_price(self):
-        return sum( Decimal(item['price']) * item['product_count'] for item in self.cart.values())
+        return sum( float(item['price']) * item['product_count'] for item in self.cart.values())
+    
+
+       

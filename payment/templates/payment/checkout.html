@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load humanize %}
-{% block content%}
+{% block content %}
 <header class="bg-dark py-5">
   <div class="container px-4 px-lg-5 my-5">
     <div class="text-center text-white">
@@ -18,47 +18,49 @@
         <div class="card">
           <div class="card-header">خلاصه سفارشات شما:</div>
           <div class="card-body">
-            {% for item in cart %}
-              {% with product=item.product %}
-
-                  {{ product.name }} <br>
-                   
-                  <small>
-                    قیمت:
-                  {% if product.is_sale %}
-                   {{ product.sale_price|intcomma }}
-                  {% else %}
-                   {{ product.price|intcomma }}
-                  {% endif %}
-                  </small> <br>
-
-                  <small> تعداد: {{ item.product_count }}</small><br>
-                  <hr>
-
-              {% endwith %}
-             {% endfor %}
-             <strong>مجموع کل سفارشات {{ cart.get_total_price|intcomma }}</strong>
-             <br>
-             <a href="{% url 'cart:cart_detail' %}" class="btn btn-sm btn-outline-secondary">ویرایش سفارش</a>
-
+        
+            {% for item in session_data %}
+              <p>
+                <strong>نام محصول:</strong> {{ item.product_name }} <br>
+                <small>
+                  <strong>قیمت:</strong>
+                  
+                    {{ item.price|floatformat:0|intcomma }}
+                
+                </small> <br>
+                <small><strong>تعداد:</strong> {{ item.product_count }}</small><br>
+              </p>
+              <hr>
+            {% endfor %}
+         
+            <strong>مجموع کل سفارشات:</strong> {{ cart.get_total_price|floatformat:0|intcomma }} تومان<br><br>
+            <a href="{% url 'cart:cart_detail' %}" class="btn btn-sm btn-outline-secondary">ویرایش سفارش</a>
           </div>
         </div>
         <br />
         <div class="card">
-          <div class="card-header">
-            مشخصات ارسال:
-        </div>
+          <div class="card-header">مشخصات ارسال:</div>
           <div class="card-body">
-            {{ shipping_form.as_p }}
-        </div>
+            <form action="{% url 'confirm_order' %}" method="POST">
+              {% csrf_token %}
+              {{ shipping_form.as_p }}
+              {% for item in session_data %}
+             <input type="hidden" name="product_ids[]" value="{{ item.product_id }}">
+             <input type="hidden" name="product_names[]" value="{{ item.product_name }}">
+             <input type="hidden" name="product_counts[]" value="{{ item.product_count }}">
+             <input type="hidden" name="prices[]" value="{{ item.price }}">
+             {% endfor %}
+             
+          </div>
         </div>
       </div>
       <br>
-      <a href="#" class="btn btn-sm btn-outline-secondary" >ادامه برای ثبت سفارش</a>
+      <button type="submit" class="btn btn-sm btn-outline-secondary">ادامه</button>
+    </form>
     </center>
   </div>
 </div>
-
 <br /><br /><br /><br />
+
 
 {% endblock %}
