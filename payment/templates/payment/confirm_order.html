@@ -38,20 +38,23 @@
         <div class="card">
           <div class="card-header">مشخصات ارسال:</div>
           <div class="card-body">
-            نام و نام خانوادگی: {{ shipping_info.shipping_full_name }} <br>
-            ایمیل: {{ shipping_info.shipping_email }} <br>
-            تلفن: {{ shipping_info.shipping_phone }} <br>
-            آدرس1: {{ shipping_info.shipping_address1 }} <br>
-            آدرس2: {{ shipping_info.shipping_address2 }} <br>
-            شهر: {{ shipping_info.shipping_city }} <br>
-            منطقه: {{ shipping_info.shipping_state }} <br>
-            کد پستی: {{ shipping_info.shipping_zipcode }} <br>
-            کشور: {{ shipping_info.shipping_country }} <br>
+            <form method="POST" action="{% url 'process_order' %}">
+              {% csrf_token %}
+            نام و نام خانوادگی: {{ user_shipping.shipping_full_name }} <br>
+            ایمیل: {{ user_shipping.shipping_email }} <br>
+            تلفن: {{ user_shipping.shipping_phone }} <br>
+            آدرس1: {{ user_shipping.shipping_address1 }} <br>
+            آدرس2: {{ user_shipping.shipping_address2 }} <br>
+            شهر: {{ user_shipping.shipping_city }} <br>
+            منطقه: {{ user_shipping.shipping_state }} <br>
+            کد پستی: {{ user_shipping.shipping_zipcode }} <br>
+            کشور: {{ user_shipping.shipping_country }} <br>
           </div>
         </div>
       </div>
       <br>
-      <a href="#" class="btn btn-sm btn-outline-secondary">ادامه برای ثبت سفارش</a>
+      <button type="submit" class="btn btn-sm btn-outline-secondary"> ثبت سفارش و پرداخت</button>
+    </form>
     </center>
   </div>
 </div>

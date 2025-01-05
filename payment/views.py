@@ -2,7 +2,7 @@ from decimal import Decimal
 from django.shortcuts import render, redirect
 from cart.cart import Cart
 from .forms import ShippingForm
-from .models import ShippingAddress
+from .models import ShippingAddress,Order
 from django.contrib import messages
 
 
@@ -85,7 +85,7 @@ def confirm_order(request):
         # ارسال داده‌ها به تمپلیت
         return render(request, 'payment/confirm_order.html', {
             'cart_final': cart_final,
-            'shipping_info': user_shipping,
+            'user_shipping': user_shipping,
             'total_price':total_price
             
 
@@ -96,9 +96,41 @@ def confirm_order(request):
         return redirect('home')
 
 
-def proccess_order(request):
+def process_order(request):
     if request.POST:
-        pass
+        user_shipping = request.session.get('user_shipping')
+        total_price = request.session.get('total_price')
+
+        full_name = user_shipping['shipping_full_name']
+        email = user_shipping['shipping_email']
+        phone = user_shipping['shipping_phone']
+        full_address = f'{user_shipping['shipping_address1']}\n{user_shipping['shipping_address2']}\n{user_shipping['shipping_city']}\n{user_shipping['shipping_state']}\n{user_shipping['shipping_zipcode']}\n{user_shipping['shipping_country']}\n'
+        
+        
+        if request.user.is_authenticated:
+            user = request.user
+            new_order = Order(
+                user=user,
+                full_name=full_name,
+                email=email,
+                phone=phone,
+                shipping_address=full_address,
+                amount_paid=Decimal(total_price)
+            )
+            new_order.save()
+            messages.success(request, 'سفارش ثبت شد') 
+            return redirect('home')
+        else:
+            new_order = Order(
+                full_name=full_name,
+                email=email,
+                phone=phone,
+                shipping_address=full_address,
+                amount_paid=Decimal(total_price)
+            )
+            new_order.save()
+            messages.success(request, 'سفارش ثبت شد') 
+            return redirect('home')
     else:
         messages.success(request, 'دسترسی به این صفحه امکان پذیر نمیباشد')  # که با سرچ یو ارال نیان تو این صفحه
         return redirect('home')
