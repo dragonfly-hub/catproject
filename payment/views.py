@@ -1,10 +1,10 @@
 from decimal import Decimal
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from cart.cart import Cart
 from .forms import ShippingForm
-from .models import ShippingAddress,Order
+from .models import ShippingAddress,Order, OrderItem
 from django.contrib import messages
-
+from catshop.models import Product
 
 
 
@@ -100,12 +100,14 @@ def process_order(request):
     if request.POST:
         user_shipping = request.session.get('user_shipping')
         total_price = request.session.get('total_price')
+        cart_final = request.session.get('cart_final')
 
         full_name = user_shipping['shipping_full_name']
         email = user_shipping['shipping_email']
         phone = user_shipping['shipping_phone']
         full_address = f'{user_shipping['shipping_address1']}\n{user_shipping['shipping_address2']}\n{user_shipping['shipping_city']}\n{user_shipping['shipping_state']}\n{user_shipping['shipping_zipcode']}\n{user_shipping['shipping_country']}\n'
         
+        cart = Cart(request)  # دریافت سبد خرید
         
         if request.user.is_authenticated:
             user = request.user
@@ -118,6 +120,38 @@ def process_order(request):
                 amount_paid=Decimal(total_price)
             )
             new_order.save()
+
+            #هر وقت بخوایم یک شی از یک مدل پیدا کنیم از این تابع استفاده میکنیم
+            odr = get_object_or_404(Order, id=new_order.pk)
+            #روی محصولات در سبد حرکت میکنیم
+            for item in cart_final:
+                prod = Product.objects.get(id=item['product_id'])
+                quantity = item['product_count']
+                price = item['price']
+
+                 # کاهش موجودی محصول
+                prod.stock -= quantity
+                prod.save()
+                
+
+                new_item = OrderItem(
+                    order = odr,
+                    product = prod,
+                    quantity = quantity,
+                    price = price,
+                    user = user
+                )
+                new_item.save()
+
+            # پاک کردن سبد خرید
+            cart.cart.clear()  # پاک کردن داده‌های سبد از سیشن
+            cart.save()
+            user.profile.old_cart = ''  # پاک کردن سبد ذخیره‌شده در پروفایل
+            user.profile.save()
+
+
+
+
             messages.success(request, 'سفارش ثبت شد') 
             return redirect('home')
         else:
@@ -129,6 +163,32 @@ def process_order(request):
                 amount_paid=Decimal(total_price)
             )
             new_order.save()
+
+            #هر وقت بخوایم یک شی از یک مدل پیدا کنیم از این تابع استفاده میکنیم
+            odr = get_object_or_404(Order, id=new_order.pk)
+
+            #روی محصولات در سبد حرکت میکنیم
+            for item in cart_final:
+                prod = Product.objects.get(id=item['product_id'])
+                quantity = item['product_count']
+                price = item['price']
+
+                # کاهش موجودی محصول
+                prod.stock -= quantity
+                prod.save()
+                
+                new_item = OrderItem(
+                    order = odr,
+                    product = prod,
+                    quantity = quantity,
+                    price = price
+                )
+                new_item.save()
+
+            # پاک کردن سبد خرید
+            cart.cart.clear()  # پاک کردن داده‌های سبد از سیشن
+            cart.save()
+
             messages.success(request, 'سفارش ثبت شد') 
             return redirect('home')
     else:

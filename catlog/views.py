@@ -102,7 +102,7 @@ class CommentPost(SingleObjectMixin, FormView):#ارث بری چندگانه
         comment.author = self.request.user # نویسنده کامنت رو برمیداریم
         comment.save() # حالا داخل دیتا بیس سیو میشه
         return super().form_valid(form) #متد فرم ولید رو از کلاس سوپر ریترن کن و بهش فرم رو هم بده. فرم ولید کاری که انجام میده اینه که میگه که فرم سیو شد و توی دیتا بیس قرار گرف حالا ساکسس یو ارال رو فراخوانی کن
-
+        
 
 
 
@@ -137,6 +137,7 @@ class PostDetail(View):
         # مقدار `original_previous_url` تغییر نمی‌کند
 
         view = CommentPost.as_view()
+        messages.success(request,'کامنت باموفقیت ارسال شد')
         return view(request, *args, **kwargs)
 
 
