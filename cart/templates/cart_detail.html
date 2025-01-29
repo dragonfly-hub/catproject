@@ -63,9 +63,18 @@
   {% endfor %}
   <div class="container"><a class="btn btn-outline-warning" href="{% url 'catshop_home' %}"><strong>+</strong> افزودن به سفارشات</a>
   <br><br><br><br><br>
-  <h3>مجموع کل سفارشات : {{ cart.get_total_price|floatformat:0|intcomma }} تومان</h3>
-  <br>
-  <a href="{% url 'checkout' %}" class="btn btn-success">صورتحساب</a></div>
+  <div class="card text-bg-info mb-3" >
+  <div class="card text-center">
+    <div class="card-header "><br>
+      <h2>مجموع کل سفارشات </h2><br><br>
+   </div>
+    <div class="card-body">
+      <h5 class="card-title"><h3> {{ cart.get_total_price|floatformat:0|intcomma }} تومان</h3></h5><br>
+      
+      <a href="{% url 'checkout' %}" class="btn btn-success btn-lg">صورتحساب</a></div><br>
+    </div>
+  </div>
+  </div>
   <br><br><br>
   
 {% else %}

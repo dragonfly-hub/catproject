@@ -5,7 +5,7 @@
 <header class="bg-dark py-5">
   <div class="container px-4 px-lg-5 my-5">
     <div class="text-center text-white">
-      <h1 class="display-4 fw-bolder">تایید نهایی</h1>
+      <h1 class="display-4 fw-bolder">تایید نهایی✓</h1>
       <p class="lead fw-normal text-white-50 mb-0">  یه بار دیگه چک کنید همه چی درست باشه  </p>
     </div>
   </div>
@@ -15,8 +15,8 @@
   <div class="row">
     <center>
       <div class="col-10">
-        <div class="card">
-          <div class="card-header">خلاصه سفارشات شما:</div>
+        <br><div class="card text-bg-info">
+          <div class="card-header"> <br> <h4> خلاصه سفارشات شما: </h4> <br> </div>
           <div class="card-body">
 
             {% for item in cart_final %}
@@ -35,11 +35,13 @@
           </div>
         </div>
         <br />
-        <div class="card">
-          <div class="card-header">مشخصات ارسال:</div>
+        <br>
+        <div class="card text-bg-info">
+          <div class="card-header">   <h4><br>مشخصات ارسال:</h4><br></div>
           <div class="card-body">
             <form method="POST" action="{% url 'process_order' %}">
               {% csrf_token %}
+              <br>
             نام و نام خانوادگی: {{ user_shipping.shipping_full_name }} <br>
             ایمیل: {{ user_shipping.shipping_email }} <br>
             تلفن: {{ user_shipping.shipping_phone }} <br>
@@ -49,11 +51,12 @@
             منطقه: {{ user_shipping.shipping_state }} <br>
             کد پستی: {{ user_shipping.shipping_zipcode }} <br>
             کشور: {{ user_shipping.shipping_country }} <br>
+            <br>
           </div>
         </div>
       </div>
       <br>
-      <button type="submit" class="btn btn-sm btn-outline-secondary"> ثبت سفارش و پرداخت</button>
+      <button type="submit" class="btn btn-outline-success btn-lg"> ثبت سفارش و پرداخت</button>
     </form>
     </center>
   </div>

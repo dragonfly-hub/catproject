@@ -17,4 +17,6 @@ urlpatterns = [
     path('cat-category/', views.cat_categorys , name='cat_categorys'),
     path('cat-related-products/<int:pk>/', views.cat_related_products , name='cat_related_products'),
     path('search/', views.search , name='search'),
+    path('orders/',views.user_orders , name='orders'),
+
 ]

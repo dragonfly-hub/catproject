@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<br><br>
+<div class="container">
+    <div class="row">
+        <center>
+            <div class="col-10">
+                
+            {% if other %}
+            <h3>سفارشات جاری</h3><br>
+                <table class="table">
+                    <thead>
+                      <tr class="table-warning">
+                        <th scope="col">شماره سفارش</th>
+                        <th scope="col">به نام</th>
+                        <th scope="col">تاریخ ثبت سفارش</th>
+                        <th scope="col">وضعیت</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in other %}
+                      <tr class="table-light">
+                        <th scope="row">{{ order.id }}</th>
+                        <td>{{ order.full_name }}</td>
+                        <td>{{ order.date_ordered|date:"Y-m-d H:i:s" }}</td>
+                        <td>{{ order.get_status_display }}</td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                سفارشی در جریان نیست!
+            {% endif %}
+            <br>
+            <hr>
+            <br> 
+            {% if delivered %}
+            <h3>سفارشات تحویل داده شده</h3><br>
+                <table class="table">
+                    <thead>
+                      <tr class="table-success">
+                        <th scope="col">شماره سفارش</th>
+                        <th scope="col">به نام</th>
+                        <th scope="col">تاریخ تحویل </th>
+                        <th scope="col">وضعیت</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in delivered %}
+                      <tr class="table-light">
+                        <th scope="row">{{ order.id }}</th>
+                        <td>{{ order.full_name }}</td>
+                        <td>{{ order.last_update|date:"Y-m-d H:i:s" }}</td>
+                        <td>{{ order.get_status_display }}</td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                سفارشی در کار نیست!
+            {% endif %}
+
+
+            </div>
+        </center>
+    </div>
+</div>
+<br><br>
+{% endblock %}

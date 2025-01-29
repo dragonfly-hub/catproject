@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from catshop.models import Product
 from django.db.models.signals import post_save
+from django_jalali.db import models as jmodels #shamsi date field
+import jdatetime
+
 
 class ShippingAddress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -44,9 +47,21 @@ class Order(models.Model):
     phone = models.CharField(max_length=25, blank=True)
     shipping_address = models.TextField(max_length=150000)
     amount_paid = models.DecimalField( decimal_places=0, max_digits=12)
-    date_ordered = models.DateTimeField(auto_now_add=True)
+    date_ordered = jmodels.jDateTimeField(auto_now_add=True)
     status = models.CharField(max_length=50, choices=STATUS_ORDER, default='Pending')
+    last_update = jmodels.jDateTimeField(auto_now=True)
     
+    def save(self, *args, **kwargs ):
+        if self.pk: #اگه شی ساخته شده بود
+            old_status = Order.objects.get(id=self.pk).status
+
+            if old_status != self.status:
+                self.last_update = jdatetime.datetime.now()
+
+        super().save(*args, **kwargs)
+
+
+
     def __str__(self) :
         return f'Order - {str(self.id)}'
     

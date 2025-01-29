@@ -5,7 +5,7 @@
 <header class="bg-dark py-5">
   <div class="container px-4 px-lg-5 my-5">
     <div class="text-center text-white">
-      <h1 class="display-4 fw-bolder">صورتحساب</h1>
+      <h1 class="display-4 fw-bolder"> صورتحساب</h1>
       <p class="lead fw-normal text-white-50 mb-0">لطفا سفارشتون رو چک کنید</p>
     </div>
   </div>
@@ -15,8 +15,9 @@
   <div class="row">
     <center>
       <div class="col-10">
-        <div class="card">
-          <div class="card-header">خلاصه سفارشات شما:</div>
+        <br><div class="card text-bg-light">
+          <div class="card-header">
+            <br><h5>خلاصه سفارشات شما: </h5><br> </div>
           <div class="card-body">
         
             {% for item in session_data %}
@@ -38,8 +39,9 @@
           </div>
         </div>
         <br />
-        <div class="card">
-          <div class="card-header">مشخصات ارسال:</div>
+        <br>
+        <div class="card text-bg-light">
+          <div class="card-header"><br> <h5> مشخصات ارسال:</h5><br> </div>
           <div class="card-body">
             <form action="{% url 'confirm_order' %}" method="POST">
               {% csrf_token %}
@@ -55,12 +57,13 @@
         </div>
       </div>
       <br>
-      <button type="submit" class="btn btn-sm btn-outline-secondary">ادامه</button>
+      <div class="d-grid gap-2 col-6 mx-auto">
+      <br><button type="submit" class="btn  btn-secondary btn-lg">تایید و ادامه</button></div>
     </form>
     </center>
   </div>
 </div>
-<br /><br /><br /><br />
+<br /><br /><br /><br /><br>
 
 
 {% endblock %}

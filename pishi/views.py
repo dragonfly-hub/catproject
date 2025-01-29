@@ -11,7 +11,7 @@ from random import randint
 from catshop.models import Product, Profile
 from django.db.models import Q
 from payment.forms import ShippingForm
-from payment.models import ShippingAddress
+from payment.models import ShippingAddress,Order,OrderItem
 
 
 def helloworld(request):
@@ -231,3 +231,18 @@ def search(request):
             return render(request, 'search.html', {'searched_cat':searched_cat ,'searched_product':searched_product})
     
     return render(request, 'search.html', {})
+
+def user_orders(request):
+   if request.user.is_authenticated:
+        delivered_orders = Order.objects.filter(user=request.user, status='Delivered')
+        other_orders = Order.objects.filter(user=request.user).exclude(status='Delivered')
+
+        context = {
+            'delivered':delivered_orders,
+            'other':other_orders
+        }
+        return render(request, 'user_orders.html',context )
+   else:
+     messages.success(request , 'دسترسی به این صفحه امکان پذیر نمیباشد')
+     return redirect('home')   
+
